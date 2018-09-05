@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SegundaActividad">
+    tools:context=".SegundaActividad"
+    android:background="#333333">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,13 +16,17 @@
             android:id="@+id/text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sefunda Actividad"/>
+            android:text="Sefunda Actividad"
+            android:textColor="#ffffff"
+            />
+
 
         <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="goToAnActivity"
+            android:background="#20b2aa"
             android:text="Go to last activity" />
 
     </LinearLayout>

@@ -10,6 +10,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import android.os.Environment;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.BitSet;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,6 +55,25 @@ public class MainActivity extends AppCompatActivity {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             ImageView mImageView = (ImageView) findViewById(R.id.imageView);
             mImageView.setImageBitmap(imageBitmap);
+            ///////////////////////// guardar foto
+            String path = Environment.getExternalStorageDirectory().toString();
+            Log.e("MY_TAG",path);
+
+
+
+            // /storage/emulated/0/DCIM/mycamera/
+            // /storage/3231-3834/DCIM/mycamera/
+            path = path +"/DCIM/mycamera";
+            File photoFile = new File(path,"mi_img.jpg");
+            try {
+                OutputStream fOut = new FileOutputStream(photoFile);
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG,80,fOut);
+            }catch (IOException ex){
+                Log.e("ERROR",ex.getMessage());
+                return;
+            }
+
+            /////////////////////////
         }
     }
 

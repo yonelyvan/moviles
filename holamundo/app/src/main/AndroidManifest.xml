@@ -6,6 +6,8 @@
 
     <!-- permisos de camana -->
     <uses-feature android:name="android.hardware.camera2" android:required="true" />
+    <!-- permisos para acceso a memoria -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
     <application
