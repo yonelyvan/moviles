@@ -2,6 +2,11 @@ package com.example.ynl.holamundo;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PointF;
+import android.media.FaceDetector;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "MESSAGE"; //static se crea una ves para n objetos
     public static final String TAG = "MESSAGE";
     public static final int REQUEST_IMAGE_CAPTURE= 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +78,66 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("ERROR",ex.getMessage());
                 return;
             }
-
             /////////////////////////
+            if( detectFaces(imageBitmap)){
+
+            }
+
+
         }
+    }
+
+    private boolean detectFaces(Bitmap imageBitmap){
+        if(null != imageBitmap){
+            int width =imageBitmap.getWidth();
+            int height = imageBitmap.getHeight();
+            int max_faces=5;
+            FaceDetector detector = new FaceDetector(width,height,max_faces);
+            FaceDetector.Face[] faces = new FaceDetector.Face[max_faces];
+
+            Bitmap bitmap565 = Bitmap.createBitmap(width,height, Bitmap.Config.RGB_565);
+            Paint ditherPaint = new Paint();
+            Paint drawPaint = new Paint();
+
+            ditherPaint.setDither(true);
+            drawPaint.setColor(Color.RED);
+            drawPaint.setStyle(Paint.Style.STROKE);
+            drawPaint.setStrokeWidth(2);
+
+            Canvas canvas = new Canvas();
+            canvas.setBitmap(bitmap565);
+            canvas.drawBitmap(imageBitmap,0,0,ditherPaint);
+
+            int facesFound = detector.findFaces(bitmap565,faces);
+            Log.e("FACEDETECTOR",Integer.toString(facesFound));
+
+            PointF midPoint = new PointF();
+            float eyeDistance = 0.0f;
+            float confidence = 0.0f;
+
+            Log.i("Face Detector","NUnber of faces found"+facesFound);
+
+            //dibujar rectangulo
+            if( facesFound > 0){
+                for(int index =0; index < facesFound; ++index){
+                    faces[index].getMidPoint(midPoint);
+                    eyeDistance = faces[index].eyesDistance();
+                    confidence = faces[index].confidence();
+
+                    //Log
+
+                    //canvas.drawRect((int)midPoint.x - eyeDistance,
+                            //(int)midPoint.y - eyeDistance,
+                            //(int)midPoint.x + eyeDistance,
+                            //(int)midPoint.y+eyeDistance,drawPaint);
+                    canvas.drawCircle((int)midPoint.x,(int)midPoint.y,(int)eyeDistance*2,drawPaint);
+                }
+                ImageView mImageView = findViewById(R.id.imageView);
+                imageBitmap = bitmap565;
+                mImageView.setImageBitmap(imageBitmap);
+            }
+        }
+        return true;
     }
 
 
