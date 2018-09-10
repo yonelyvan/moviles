@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             File photoFile = new File(path,"mi_img.jpg");
             try {
                 OutputStream fOut = new FileOutputStream(photoFile);
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG,80,fOut);
+                imageBitmap.compress(Bitmap.CompressFormat.PNG,98,fOut);
             }catch (IOException ex){
                 Log.e("ERROR",ex.getMessage());
                 return;
