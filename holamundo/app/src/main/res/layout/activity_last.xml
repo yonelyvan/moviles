@@ -4,29 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".LastActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#333333">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Last Activity"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <FrameLayout
+            android:id="@+id/camera_preview"
+            android:layout_width="412dp"
+            android:layout_height="400dp"
+            tools:layout_editor_absoluteY="3dp"></FrameLayout>
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/flor" />
 
+        <Button
+            android:id="@+id/ibCapture"
+            android:layout_width="fill_parent"
+            android:layout_height="142dp"
+            android:layout_weight="1"
+            android:text="Capture"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="391dp" />
     </LinearLayout>
-
 
 </android.support.constraint.ConstraintLayout>
