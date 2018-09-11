@@ -4,10 +4,12 @@
     package="com.example.ynl.holamundo">
 
 
-    <!-- permisos de camana -->
+    <!-- permisos de camara -->
     <uses-feature android:name="android.hardware.camera2" android:required="true" />
     <!-- permisos para acceso a memoria -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--customize camera -->
+
 
 
     <application
