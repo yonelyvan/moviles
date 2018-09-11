@@ -38,6 +38,7 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
         camera.setParameters(params);
         try {
             camera.setPreviewDisplay(holder);
+            camera.startPreview();
         }catch (IOException e){
             //e.printStackTrace();
             Log.e("ERROR",e.getMessage());
