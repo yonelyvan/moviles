@@ -5,32 +5,50 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:visibility="visible"
     tools:context=".LastActivity">
 
-
-    <Button
-        android:id="@+id/btn_capture"
-        android:layout_width="184dp"
-        android:layout_height="233dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:onClick="captureImage"
-        android:text="Disparar" />
 
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="471dp"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
 
     </FrameLayout>
 
-    <Button
-        android:id="@+id/btn_galeria"
-        android:layout_width="181dp"
-        android:layout_height="227dp"
+    <ImageButton
+        android:id="@+id/changeCamera"
+        android:layout_width="72dp"
+        android:layout_height="64dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/shutter"
+        android:layout_marginStart="37dp"
+        android:background="@null"
+        app:srcCompat="@mipmap/change52" />
+
+    <ImageButton
+        android:id="@+id/shutter"
+        android:layout_width="79dp"
+        android:layout_height="68dp"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="19dp"
+        android:background="@null"
+        android:onClick="captureImage"
+        app:srcCompat="@mipmap/shutter50" />
+
+    <ImageButton
+        android:id="@+id/gallery"
+        android:layout_width="72dp"
+        android:layout_height="64dp"
+        android:layout_alignBottom="@+id/shutter"
         android:layout_alignParentEnd="true"
-        android:text="Galeria" />
+        android:layout_marginEnd="18dp"
+        android:background="@null"
+        android:onClick="openGallery"
+        app:srcCompat="@mipmap/gallery50" />
+
+
 </RelativeLayout>
