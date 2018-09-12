@@ -10,20 +10,26 @@
 
     <Button
         android:id="@+id/btn_capture"
-        android:layout_width="405dp"
-        android:layout_height="123dp"
+        android:layout_width="184dp"
+        android:layout_height="233dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="takePhoto"
-        android:text="capture" />
+        android:layout_alignParentStart="true"
+        android:text="Disparar" />
 
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="479dp"
+        android:layout_height="471dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="3dp">
+        android:layout_alignParentTop="true">
 
     </FrameLayout>
+
+    <Button
+        android:id="@+id/btn_galeria"
+        android:layout_width="181dp"
+        android:layout_height="227dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="Galeria" />
 </RelativeLayout>
