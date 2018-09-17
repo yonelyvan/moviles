@@ -2,6 +2,7 @@ package com.example.ynl.camara;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Canvas;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -20,6 +21,8 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
         holder = getHolder();
         holder.addCallback(this);
     }
+
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -55,8 +58,10 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
             //e.printStackTrace();
             Log.e("ERROR",e.getMessage());
         }
-
     }
+
+
+
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
