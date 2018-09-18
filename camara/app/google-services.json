@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "543437151353",
+    "firebase_url": "https://projectmi-63924.firebaseio.com",
+    "project_id": "projectmi-63924",
+    "storage_bucket": "projectmi-63924.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:543437151353:android:a456dbf5312774d9",
+        "android_client_info": {
+          "package_name": "com.example.ynl.camara"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "543437151353-pcnspo1vn7hc3q3tjp8i99v3aeiu5nk4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf_Bw05ScxZO_uyQd6HsHInzIIkZA30fs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:543437151353:android:7d78406d10fa7318",
+        "android_client_info": {
+          "package_name": "com.example.ynl.projectmi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "543437151353-pcnspo1vn7hc3q3tjp8i99v3aeiu5nk4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf_Bw05ScxZO_uyQd6HsHInzIIkZA30fs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
