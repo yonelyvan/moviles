@@ -1,12 +1,16 @@
 package com.example.ynl.camara;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,26 +21,25 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MESSAGE";
     public static final String IMGPATH="null"; //static se crea una ves para n objetos
+    public static final Intent DATA_IMG =null;
     //public static final int REQUEST_IMAGE_CAPTURE= 1;
     private static int RESULT_LOAD_IMAGE = 1;
+    public static final int REQUEST_IMAGE_CAPTURE= 1;
 
-    static Camera camera = null;
+    //static Camera camera = null;
     FrameLayout frameLayout;
-    ShowCamera showCamera;
+    CameraPreview mPreview;
     public int id_camera = 0;
     private static final int PICK_IMAGE =100;
 
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //
+        mPreview = findViewById(R.id.preview);
+
         /*
         //camara
         frameLayout = (FrameLayout)findViewById(R.id.frameLayout);
@@ -53,31 +58,9 @@ public class MainActivity extends AppCompatActivity {
         showCamera = new ShowCamera(this,camera);
         frameLayout.addView(showCamera);
         */
+
     }
 
-    //seleccion de imagen de galeria
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            Log.e(MainActivity.TAG,selectedImage.toString());//URI
-
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-
-            //message img path and go to an activity
-            Intent intent = new Intent(this,UploadPhoto.class);
-            intent.putExtra(IMGPATH,picturePath);
-            startActivity(intent);
-        }
-    }
 
 
 
@@ -116,25 +99,58 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void capturePhoto(View v){
+        mPreview.takePicture();
+        Intent intent1 = getIntent();
+        String imgpath_lastimg = intent1.getStringExtra(CameraPreview.LAST_IMG_TAKEN);
 
-/*
-    public void captureImage(View v){
-        if(camera!=null){
-            camera.takePicture(null,null, mPictureCallback);
-        }
+        //message img path and go to an activity
+        Intent intent = new Intent(this,UploadPhoto.class);
+        intent.putExtra(IMGPATH,imgpath_lastimg );//mPreview.LAST_IMG_TAKEN);
+        Log.e(MainActivity.TAG, "LASSST:: "+imgpath_lastimg);//URI
+        startActivity(intent);
+
     }
 
-    //old mode
-    public void openGallery(View v){
-        Intent gallery= new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(gallery,PICK_IMAGE);
 
-        //this.sendBroadcast(gallery);
-    }*/
 
     public void openGallery(View v){
         Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, RESULT_LOAD_IMAGE);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void switchCamera(View v) {
+        mPreview.switchCamera();
+    }
+
+    //seleccion de imagen de galeria
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            Log.e(MainActivity.TAG,selectedImage.toString());//URI
+
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            //message img path and go to an activity
+            Intent intent = new Intent(this,UploadPhoto.class);
+            intent.putExtra(IMGPATH,picturePath);
+            //intent.putExtra(DATA_IMG, data);
+
+            Log.e(MainActivity.TAG, "IMAGEN GALLERY "+picturePath );//URI
+            startActivity(intent);
+        }
+    }
+
 
 }

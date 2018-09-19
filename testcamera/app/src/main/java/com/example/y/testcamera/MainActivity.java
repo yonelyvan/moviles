@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -109,9 +110,11 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, RESULT_LOAD_IMAGE);
     }
 
-    public void switchCamera( View v) {
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void switchCamera(View v) {
         mPreview.switchCamera();
     }
+
 
 
 
