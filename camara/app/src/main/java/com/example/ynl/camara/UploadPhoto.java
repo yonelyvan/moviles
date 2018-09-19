@@ -44,7 +44,7 @@ public class UploadPhoto extends AppCompatActivity {
             showImage();
             //
             m_storage = FirebaseStorage.getInstance().getReference();
-            m_upload_btn = (Button) findViewById(R.id.m_upload_btn);
+            //m_upload_btn = (Button) findViewById(R.id.m_upload_btn);
         }
 
         public void btn_upload(View v){
