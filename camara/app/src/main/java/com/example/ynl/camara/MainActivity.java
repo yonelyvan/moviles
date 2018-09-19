@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
     public void openGallery(View v){
         Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, RESULT_LOAD_IMAGE);
+        
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
