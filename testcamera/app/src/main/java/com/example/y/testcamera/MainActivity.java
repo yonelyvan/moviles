@@ -1,10 +1,13 @@
 package com.example.y.testcamera;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +24,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String IMGPATH="null"; //static se crea una ves para n objetos
     //public static final int REQUEST_IMAGE_CAPTURE= 1;
     private static int RESULT_LOAD_IMAGE = 1;
+    public static final int REQUEST_IMAGE_CAPTURE= 1;
 
     static Camera camera = null;
     FrameLayout frameLayout;
@@ -92,20 +97,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    public void captureImage(View v){
-        if(camera!=null){
-            camera.takePicture(null,null, mPictureCallback);
-        }
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void capturePhoto(View v){
+        mPreview.takePicture();
     }
-/*
-    //old mode
-    public void openGallery(View v){
-        Intent gallery= new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(gallery,PICK_IMAGE);
 
-        //this.sendBroadcast(gallery);
-    }*/
+
 
     public void openGallery(View v){
         Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -115,4 +112,7 @@ public class MainActivity extends AppCompatActivity {
     public void switchCamera( View v) {
         mPreview.switchCamera();
     }
+
+
+
 }

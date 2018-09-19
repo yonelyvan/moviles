@@ -10,9 +10,11 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Base64;
 import android.util.Log;
@@ -37,8 +39,10 @@ import java.util.concurrent.CountDownLatch;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
+
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
-    public static final String TAG = "MESSAGE";
+    public static final String TAG = "CameraPreview";
 
     private int mDisplayOrientation;
     private int mSurfaceViewWidth, mSurfaceViewHeight;
@@ -223,7 +227,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.setParameters(parameters);
 
             mCamera.setPreviewDisplay(mHolder);
-            mCamera.setPreviewCallback((Camera.PreviewCallback) this);
+            mCamera.setPreviewCallback( this);
             //mCamera.setPreviewCallbackWithBuffer(this);
             //mCamera.addCallbackBuffer();
             mCamera.startPreview();
@@ -354,7 +358,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return result;
     }
 
-    //@Override
+    @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         Log.d(TAG, "onPreviewFrame: show water mark");
         try
@@ -447,13 +451,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void takePicture() {
         mCamera.takePicture(null, null, null, mPictureCallback);
+
     }
 
     private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
-
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+
             if (pictureFile == null) {
                 Log.d(TAG, "Error creating media file, check storage permissions: ");
                 return;
@@ -465,7 +470,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 mCamera.startPreview();
                 String base64 = Base64.encodeToString(data, Base64.NO_WRAP);
                 String result = null;//WebServiceUtil.updateStudentInfo("001", "abc", base64);
-                Toast.makeText(mContext, "picture path is:" + pictureFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(mContext, "picture path is:" + pictureFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
                 Log.e(TAG, "onPictureTaken: save take picture image success"+ pictureFile.getAbsolutePath());
             } catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found: " + e.getMessage());
@@ -475,19 +481,27 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     };
 
-    private File getOutputMediaFile(int mediaType)
-    {
+    private File getOutputMediaFile(int mediaType){
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        //String timeStamp = "/DCIM/mycamera";
+
         String fileName = null;
         File storageDir = null;
+
+        //
+        String path = Environment.getExternalStorageDirectory().toString();
+        path = path +"/DCIM/YNL/";
+        //Log.e(TAG, "PATH:: "+path);
+
         if (mediaType == MEDIA_TYPE_IMAGE) {
-            fileName = "JPEG_" + timeStamp + "_";
-            storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        } else if (mediaType == MEDIA_TYPE_VIDEO) {
-            fileName = "MP4_" + timeStamp + "_";
-            storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+            fileName = "JPEG" + timeStamp;
+            //Log.e(TAG, "TIMESTAMP:: "+fileName);
+            storageDir = new File(path);//mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         }
 
+        //Log.e(TAG, "PATH:: "+path);
+        //Log.e(TAG, "FILENAME:: "+fileName);
+        //Log.e(TAG, "STORAGE:: "+storageDir.toString());
         // Create the storage directory if it does not exist
         if (!storageDir.exists()) {
             if (!storageDir.mkdirs()) {
@@ -498,13 +512,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         File file = null;
         try {
-            file = File.createTempFile(
-                    fileName,  /* prefix */
-                    (mediaType == MEDIA_TYPE_IMAGE) ? ".jpg" : ".mp4",         /* suffix */
-                    storageDir      /* directory */
-            );
+            file = File.createTempFile( fileName, (mediaType == MEDIA_TYPE_IMAGE) ? ".jpg" : ".mp4", storageDir);
             Log.d(TAG, "getOutputMediaFile: absolutePath==" + file.getAbsolutePath());
-        } catch (IOException e) {
+        } catch (IOException e){
             e.printStackTrace();
         }
 
