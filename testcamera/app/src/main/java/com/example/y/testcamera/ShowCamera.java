@@ -14,9 +14,9 @@ import java.util.List;
 
 public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
     public static final String TAG = "MESSAGE";
-    Camera camera;
+    Camera mCamera;
     //private Camera mCamera;
-    SurfaceHolder holder;
+    SurfaceHolder mHolder;
 
 
     private int mCameraId = 1;
@@ -25,23 +25,32 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
     private Context mContext;
 
 
+    /*
     public ShowCamera(Context context, Camera camera){
         super(context);
-        this.camera = camera;
-        holder = getHolder();
-        holder.addCallback(this);
+        this.mCamera = camera;
+        mHolder = getHolder();
+        mHolder.addCallback(this);
+    }*/
+
+    public ShowCamera(Context context) {
+        this(context, null);
     }
-    /*
-    public ShowCamera(Context context){ //, AttributeSet attrs, int defStyleAttr){
-        super(context); //, attrs, defStyleAttr);
+
+    public ShowCamera(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public ShowCamera(Context context, AttributeSet attrs, int defStyleAttr){
+        super(context, attrs, defStyleAttr);
         mContext = context;
-        holder = getHolder();
-        holder.setKeepScreenOn(true);
-        holder.addCallback(this);
-        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        mHolder = getHolder();
+        mHolder.setKeepScreenOn(true);
+        mHolder.addCallback(this);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         getDefaultCameraId();
     }
-    */
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -99,11 +108,11 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
 
 
     private void destroyCamera() {
-        if (camera == null) return;
-        camera.setPreviewCallback(null);
-        camera.stopPreview();
-        camera.release();
-        camera = null;
+        if (mCamera == null) return;
+        mCamera.setPreviewCallback(null);
+        mCamera.stopPreview();
+        mCamera.release();
+        mCamera = null;
     }
 
     public void switchCamera() {
@@ -114,14 +123,14 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
         }
         destroyCamera();
 
-        camera = Camera.open(mCameraId);
+        mCamera = Camera.open(mCameraId);
         try {
-            camera.setPreviewDisplay(holder);
+            mCamera.setPreviewDisplay(mHolder);
         } catch (IOException e) {
             e.printStackTrace();
         }
         //camera.setPreviewCallback(this);
-        camera.startPreview();
+        mCamera.startPreview();
     }
 
 

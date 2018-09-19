@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     static Camera camera = null;
     FrameLayout frameLayout;
-    ShowCamera showCamera;
+    CameraPreview mPreview;
     public int id_camera = 0;
     private static final int PICK_IMAGE =100;
 
@@ -41,13 +41,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //
+        mPreview = findViewById(R.id.preview);
 
+        /*
         //camara
         frameLayout = (FrameLayout)findViewById(R.id.frameLayout);
         //abrir camara
         camera = Camera.open(id_camera);
         showCamera = new ShowCamera(this,camera);
         frameLayout.addView(showCamera);
+        */
 
     }
 
@@ -110,6 +113,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchCamera( View v) {
-        showCamera.switchCamera();
+        mPreview.switchCamera();
     }
 }
