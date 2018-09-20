@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public int id_camera = 0;
     private static final int PICK_IMAGE =100;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,9 +108,10 @@ public class MainActivity extends AppCompatActivity {
 
         //message img path and go to an activity
         Intent intent = new Intent(this,UploadPhoto.class);
-        intent.putExtra(IMGPATH,imgpath_lastimg );//mPreview.LAST_IMG_TAKEN);
+        //intent.putExtra(IMGPATH,imgpath_lastimg );//mPreview.LAST_IMG_TAKEN);
         Log.e(MainActivity.TAG, "LASSST:: "+imgpath_lastimg);//URI
-        startActivity(intent);
+        //startActivity(intent);
+
 
     }
 

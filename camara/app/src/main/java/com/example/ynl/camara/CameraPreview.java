@@ -10,6 +10,7 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -117,6 +118,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 break;
             }
         }
+        //this.switchCamera();
+        //this.switchCamera();
     }
 
     @Override
@@ -472,7 +475,18 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 String base64 = Base64.encodeToString(data, Base64.NO_WRAP);
                 String result = null;//WebServiceUtil.updateStudentInfo("001", "abc", base64);
 
-                Toast.makeText(mContext, "picture path is:" + pictureFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Guardado en::" + pictureFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+
+
+                    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    File f = new File(pictureFile.getAbsolutePath());
+                    Uri contentUri = Uri.fromFile(f);
+                    mediaScanIntent.setData(contentUri);
+                    mContext.sendBroadcast(mediaScanIntent);
+
+
+
                 Log.e(TAG, "guardado en:: "+ pictureFile.getAbsolutePath());
 
                 Log.e(TAG, "guardado en2:: "+ pictureFile.getAbsolutePath());
