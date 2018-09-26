@@ -103,15 +103,16 @@ public class MainActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void capturePhoto(View v){
         mPreview.takePicture();
-        Intent intent1 = getIntent();
-        String imgpath_lastimg = intent1.getStringExtra(CameraPreview.LAST_IMG_TAKEN);
+
+        String imgpath_lastimg = mPreview.LAST_IMG_TAKEN;
 
         //message img path and go to an activity
+        Intent intent1 = getIntent();
         Intent intent = new Intent(this,UploadPhoto.class);
-        //intent.putExtra(IMGPATH,imgpath_lastimg );//mPreview.LAST_IMG_TAKEN);
+
+        intent.putExtra("MC_LAST_IMG_TAKEN",imgpath_lastimg );//mPreview.LAST_IMG_TAKEN);
         Log.e(MainActivity.TAG, "LASSST:: "+imgpath_lastimg);//URI
         //startActivity(intent);
-
 
     }
 

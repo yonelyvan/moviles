@@ -12,10 +12,12 @@ import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Base64;
 import android.util.Log;
@@ -40,6 +42,7 @@ import java.util.concurrent.CountDownLatch;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 
 
+
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
     public static final String TAG = "CameraPreview";
@@ -56,7 +59,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private static final int CAMERA_BACK = 1;
     private Context mContext;
 
-    public static final String LAST_IMG_TAKEN = "/storage/emulated/0/DCIM/YNL/JPEG20180919_161627665273792.jpg";
+    public static String LAST_IMG_TAKEN = "/storage/emulated/0/DCIM/YNL/JPEG20180919_161627665273792.jpg";
+
+
 
 
     public CameraPreview(Context context) {
@@ -456,12 +461,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void takePicture() {
         mCamera.takePicture(null, null, null, mPictureCallback);
+
     }
 
     private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+            LAST_IMG_TAKEN = pictureFile.getAbsolutePath();
 
             if (pictureFile == null) {
                 Log.d(TAG, "Error creating media file, check storage permissions: ");
@@ -490,6 +497,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 Log.e(TAG, "guardado en:: "+ pictureFile.getAbsolutePath());
 
                 Log.e(TAG, "guardado en2:: "+ pictureFile.getAbsolutePath());
+
             } catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found: " + e.getMessage());
             } catch (IOException e) {
@@ -537,8 +545,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
             //Intent intent = new Intent(this,MainActivity.class);
             Intent intent = new Intent();
-            intent.putExtra(LAST_IMG_TAKEN, file.getAbsolutePath());
+            String MC_LAST_IMG_TAKEN = null;
+            intent.putExtra(MC_LAST_IMG_TAKEN, file.getAbsolutePath());
+
             //LAST_IMG_TAKEN = file.getAbsolutePath();
+            Log.e(TAG, "EN CREACION DE ARCHIVO:: "+ file.getAbsolutePath());
 
         } catch (IOException e){
             e.printStackTrace();
