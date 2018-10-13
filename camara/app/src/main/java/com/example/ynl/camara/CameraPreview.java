@@ -59,9 +59,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private static final int CAMERA_BACK = 1;
     private Context mContext;
 
-    public static String LAST_IMG_TAKEN = "/storage/emulated/0/DCIM/YNL/JPEG20180919_161627665273792.jpg";
-
-
+    //public static String LAST_IMG_TAKEN = "/storage/emulated/0/DCIM/YNL/JPEG20180919_161627665273792.jpg";
 
 
     public CameraPreview(Context context) {
@@ -129,58 +127,20 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        /*
-        Camera.Parameters params = camera.getParameters();
-        //cambiar la orientacion de la camara
-        // ---
-        List<Camera.Size> sizes = params.getSupportedPictureSizes();
-        Camera.Size mSize = null;
-        for(Camera.Size size : sizes){
-            mSize = size;
+        if(mCamera!=null){
+            mCamera.startPreview();
         }
-        //---2
-        if(this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE){
-            params.set("orientation","portrait");
-            camera.setDisplayOrientation(90);
-            params.setRotation(90);
-
-        }else{
-            params.set("orientation","landscape");
-            camera.setDisplayOrientation(0);
-            params.setRotation(0);
-        }
-        //---2
-        params.setPictureSize(mSize.width, mSize.height);
-        //---
-
-
-        camera.setParameters(params);
-        try {
-            camera.setPreviewDisplay(holder);
-            camera.startPreview();
-        }catch (IOException e){
-            //e.printStackTrace();
-            Log.e("ERROR",e.getMessage());
-        }*/
     }
 
 
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        //---2
-        //camera.stopPreview();
-        //camera.release();
-        //---
         destroyCamera();
     }
 
-    /*
+
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
-    }*/
-
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         Log.d(TAG, "surfaceChanged: ");
         mSurfaceViewWidth = w;
@@ -205,19 +165,18 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             Camera.Parameters parameters = mCamera.getParameters();//Obtener la instancia de parámetros de la cámara
             List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();//Obtener todos los tamaños de cámara admitidos
             Camera.Size bestSize = getOptimalPreviewSize(sizeList, w, h);//Obtenga el tamaño de pantalla más adecuado
-            Log.d(TAG, "initCamera: surface width==" + w + ",height==" + h);
             //Camera.Size bestSize = getBestCameraResolution(parameters, w, h);
-            // Camera.Size bestSize = getPreferredPreviewSize(parameters, w, h);
+            //Camera.Size bestSize = getPreferredPreviewSize(parameters, 1280, 720);
+            Log.d(TAG, "initCamera: surface width==" + w + ",height==" + h);
 
             parameters.setPreviewSize(bestSize.width, bestSize.height);
-            Log.d(TAG, "initCamera: best size width=="
-                    + bestSize.width + ",best size height==" + bestSize.height);
+            //Log.d(TAG, "initCamera: best size width==" + bestSize.width + ",best size height==" + bestSize.height);
 
             //Establecer el tamaño de la imagen de salida de la foto
             parameters.setPictureSize(bestSize.width, bestSize.height);
 
             //Establecer la dirección de vista previa
-            //mCamera.setDisplayOrientation(90);
+            mCamera.setDisplayOrientation(90);
             //Después de la mejora
             //setCameraDisplayOrientation((Activity) mContext, mCameraId, mCamera);
             int rotationDegrees = getCameraDisplayOrientation((Activity) mContext, mCameraId);
@@ -237,15 +196,42 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
             mCamera.setPreviewDisplay(mHolder);
             mCamera.setPreviewCallback( this);
-            //mCamera.setPreviewCallbackWithBuffer(this);
-            //mCamera.addCallbackBuffer();
             mCamera.startPreview();
-            startFaceDetection();
         }
         catch (Exception e){
             Log.d(TAG, "Error starting camera preview: " + e.getMessage());
         }
     }
+
+    private void setCameraDisplayOrientation(Activity context, int cameraType, Camera camera) {
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(cameraType, info);
+        int rotation = context.getWindowManager().getDefaultDisplay().getRotation();
+        int degrees = 0;
+        switch (rotation){
+            case Surface.ROTATION_0:
+                degrees = 0;
+                bringToFront();
+            case Surface.ROTATION_90:
+                degrees = 90;
+                bringToFront();
+            case Surface.ROTATION_180:
+                degrees = 180;
+                bringToFront();
+            case Surface.ROTATION_270:
+                degrees = 270;
+                bringToFront();
+        }
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT){
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        camera.setDisplayOrientation(result);
+    }
+
 
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.1;
@@ -288,16 +274,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mCamera = null;
     }
 
-    private void startFaceDetection() {
-        // Try starting Face Detection
-        Camera.Parameters params = mCamera.getParameters();
-
-        // start face detection only *after* preview has started
-        if (params.getMaxNumDetectedFaces() > 0) {
-            // camera supports face detection, so can start it:
-            mCamera.startFaceDetection();
-        }
-    }
 
     private Camera.Size getPreferredPreviewSize(Camera.Parameters parameters, int width, int height) {
         Log.e(TAG, "getPreferredPreviewSize: surface width=" + width + ",surface height=" + height);
@@ -332,8 +308,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
 
     public int getCameraDisplayOrientation(Activity activity, int cameraId) {
-        Camera.CameraInfo info =
-                new Camera.CameraInfo();
+        Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, info);
         int rotation = activity.getWindowManager().getDefaultDisplay()
                 .getRotation();
@@ -358,12 +333,15 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
 
         int result;
+
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             result = (info.orientation + degrees) % 360;
             result = (360 - result) % 360;  // compensate the mirror
         } else {  // back-facing
             result = (info.orientation - degrees + 360) % 360;
         }
+
+
         return result;
     }
 
@@ -468,7 +446,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-            LAST_IMG_TAKEN = pictureFile.getAbsolutePath();
+            //LAST_IMG_TAKEN = pictureFile.getAbsolutePath();
 
             if (pictureFile == null) {
                 Log.d(TAG, "Error creating media file, check storage permissions: ");
@@ -545,8 +523,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
             //Intent intent = new Intent(this,MainActivity.class);
             Intent intent = new Intent();
-            String MC_LAST_IMG_TAKEN = null;
-            intent.putExtra(MC_LAST_IMG_TAKEN, file.getAbsolutePath());
+            //String MC_LAST_IMG_TAKEN = null;
+            //intent.putExtra(MC_LAST_IMG_TAKEN, file.getAbsolutePath());
 
             //LAST_IMG_TAKEN = file.getAbsolutePath();
             Log.e(TAG, "EN CREACION DE ARCHIVO:: "+ file.getAbsolutePath());

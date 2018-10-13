@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -48,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //full screem
+        getSupportActionBar().hide();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //
         mPreview = findViewById(R.id.preview);
 
@@ -104,14 +109,14 @@ public class MainActivity extends AppCompatActivity {
     public void capturePhoto(View v){
         mPreview.takePicture();
 
-        String imgpath_lastimg = mPreview.LAST_IMG_TAKEN;
+        //String imgpath_lastimg = mPreview.LAST_IMG_TAKEN;
 
         //message img path and go to an activity
         Intent intent1 = getIntent();
         Intent intent = new Intent(this,UploadPhoto.class);
 
-        intent.putExtra("MC_LAST_IMG_TAKEN",imgpath_lastimg );//mPreview.LAST_IMG_TAKEN);
-        Log.e(MainActivity.TAG, "LASSST:: "+imgpath_lastimg);//URI
+        //intent.putExtra("MC_LAST_IMG_TAKEN",imgpath_lastimg );//mPreview.LAST_IMG_TAKEN);
+        //Log.e(MainActivity.TAG, "LASSST:: "+imgpath_lastimg);//URI
         //startActivity(intent);
 
     }
