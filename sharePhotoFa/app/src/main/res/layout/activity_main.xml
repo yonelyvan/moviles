@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnShareLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="shareLink"
+            android:text="Share Link"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="70dp" />
+
+        <Button
+            android:id="@+id/btnSharePhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="sharePhoto"
+            android:text="Share Photo"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="200dp" />
+
+
+        <Button
+            android:id="@+id/btnShareVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Share Video"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="362dp" />
+
+
+    </LinearLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>

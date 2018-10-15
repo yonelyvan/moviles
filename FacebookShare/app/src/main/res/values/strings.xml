@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">FacebookShare</string>
+    <string name="facebook_app_id">2184957831751261</string>
+    <string name="facebook_login_protocol_scheme">fb2184957831751261</string>
+</resources>
