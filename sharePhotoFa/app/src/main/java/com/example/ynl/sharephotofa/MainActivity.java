@@ -1,220 +1,163 @@
 package com.example.ynl.sharephotofa;
 
 import android.annotation.TargetApi;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.model.ShareVideo;
-import com.facebook.share.model.ShareVideoContent;
-import com.facebook.share.widget.ShareDialog;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String TAG = "MESSAGE";
+    public static final String IMGPATH="null"; //static se crea una ves para n objetos
+    public static final Intent DATA_IMG =null;
+    //public static final int REQUEST_IMAGE_CAPTURE= 1;
+    private static int RESULT_LOAD_IMAGE = 1;
+    public static final int REQUEST_IMAGE_CAPTURE= 1;
 
-    private static final int REQUEST_VIDEO_CODE = 1000;
-
-
-    //https://i.ytimg.com/vi/anqwEsZatSU/maxresdefault.jpg
-
-    Button btnShareLink,btnSharePhoto,btnShareVideo;
-    CallbackManager callbackManager;
-    ShareDialog shareDialog;
-
-    Target target = new Target() {
-        @Override
-        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-
-            SharePhoto sharePhoto = new SharePhoto.Builder()
-                    .setBitmap(bitmap)
-                    .build();
-
-            if(ShareDialog.canShow(SharePhotoContent.class)){
-                SharePhotoContent content = new SharePhotoContent.Builder()
-                        .addPhoto(sharePhoto)
-                        .build();
-
-                shareDialog.show(content);
-            }
-        }
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable) {
-
-        }
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-        }
-    };
-
-
+    //static Camera camera = null;
+    FrameLayout frameLayout;
+    CameraPreview mPreview;
+    public int id_camera = 0;
+    private static final int PICK_IMAGE =100;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_main);
 
-        //printKeyHash();
+        //full screem
+        getSupportActionBar().hide();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //
+        mPreview = findViewById(R.id.preview);
 
-
-        //Init View
-        //btnShareLink = (Button)findViewById(R.id.btnShareLink);
-        btnSharePhoto = (Button)findViewById(R.id.btnSharePhoto);
-        btnShareVideo = (Button)findViewById(R.id.btnShareVideo);
-
-        //Init FB
-        callbackManager = CallbackManager.Factory.create();
-        shareDialog = new ShareDialog(this);
-
-
-        btnSharePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("SHARE PHOTO",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
-                //Create callback
-
-                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-                    @Override
-                    public void onSuccess(Sharer.Result result) {
-                        Toast.makeText(MainActivity.this, "Share successful", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Toast.makeText(MainActivity.this, "Share cancel", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-                //We will fetch photo from link and convert to bitmap
-                Picasso.with(getBaseContext()).load("https://i.ytimg.com/vi/anqwEsZatSU/maxresdefault.jpg").into(target);
-            }
-        });
-
-
-
-        btnShareVideo.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                //choose Video dialog
-                Intent intent = new Intent();
-                intent.setType("video/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-
-                startActivityForResult(Intent.createChooser(intent,"Select Video"),REQUEST_VIDEO_CODE);
-
-            }
-        });
-
+        /*
+        //camara
+        frameLayout = (FrameLayout)findViewById(R.id.frameLayout);
+        //abrir camara
+        camera = Camera.open(id_camera);
+        showCamera = new ShowCamera(this,camera);
+        frameLayout.addView(showCamera);
+        */
 
     }
 
 
 
+
+
+    Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+            File picture_file = getOutputMediaFile();
+            if(picture_file == null){
+                return;
+            }else{
+                try {
+                    FileOutputStream fos = new FileOutputStream(picture_file);
+                    fos.write(data);
+                    fos.close();
+
+                    camera.startPreview();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    private File getOutputMediaFile(){
+        String state = Environment.getExternalStorageState();
+        if(!state.equals(Environment.MEDIA_MOUNTED)){
+            return null;
+        }else {
+            File folder_gui = new File(Environment.getExternalStorageDirectory() + "/DCIM/MYCAMERA");
+            if(!folder_gui.exists()){
+                folder_gui.mkdir();
+            }
+            File outputFile = new File(folder_gui,"temp1.jpg");
+            return outputFile;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void capturePhoto(View v){
+        mPreview.takePicture();
+
+        //String imgpath_lastimg = mPreview.LAST_IMG_TAKEN;
+
+        //message img path and go to an activity
+        Intent intent1 = getIntent();
+        Intent intent = new Intent(this,ShareImgFa.class);
+
+        //intent.putExtra("MC_LAST_IMG_TAKEN",imgpath_lastimg );//mPreview.LAST_IMG_TAKEN);
+        //Log.e(MainActivity.TAG, "LASSST:: "+imgpath_lastimg);//URI
+        //startActivity(intent);
+
+    }
+
+
+
+    public void openGallery(View v){
+        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, RESULT_LOAD_IMAGE);
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void switchCamera(View v) {
+        mPreview.switchCamera();
+    }
+
+    //seleccion de imagen de galeria
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
+        super.onActivityResult(requestCode, resultCode, data);
 
-            if(requestCode==REQUEST_VIDEO_CODE){
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            Log.e(MainActivity.TAG,selectedImage.toString());//URI
 
-                Uri selectedVideo = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
 
-                ShareVideo video = new ShareVideo.Builder()
-                        .setLocalUrl(selectedVideo)
-                        .build();
+            //message img path and go to an activity
+            Intent intent = new Intent(this,ShareImgFa.class);
+            intent.putExtra(IMGPATH,picturePath);
+            //intent.putExtra(DATA_IMG, data);
 
-                ShareVideoContent videoContent = new ShareVideoContent.Builder()
-                        .setContentTitle("This is useful video")
-                        .setContentDescription("Funny video for moviles cs-unsa")
-                        .setVideo(video)
-                        .build();
-
-                if(shareDialog.canShow(ShareVideoContent.class))
-                    shareDialog.show(videoContent);
-            }
-
-
-        }
-    }
-
-
-    private void printKeyHash() {
-        Log.d("KeyHash",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
-        try{
-            PackageInfo info = getPackageManager().getPackageInfo("com.example.ynl.sharephotofa", PackageManager.GET_SIGNATURES);
-            for(Signature signature:info.signatures)
-            {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-
-            }
-
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-    public void shareLink(View v){
-        ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                .setQuote("This is useful link")
-                .setContentUrl(Uri.parse("https://youtube.com"))
-                .build();
-
-        if(ShareDialog.canShow(ShareLinkContent.class))
-        {
-            shareDialog.show(linkContent);
+            Log.e(MainActivity.TAG, "IMAGEN GALLERY "+picturePath );//URI
+            startActivity(intent);
         }
     }
 

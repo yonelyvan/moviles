@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ynl.sharephotofa">
+
+    <!-- permisos de camara -->
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="true" />
+    <!-- permisos para acceso a memoria -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- customize camera -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
     <!--PERMISOS DE INTERNET!-->
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -23,6 +33,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".ShareImgFa" android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
         </activity>
 
         <!--ESPECIFICAMOS EL PROVEEDOR !-->
