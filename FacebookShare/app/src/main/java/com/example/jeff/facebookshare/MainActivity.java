@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     ShareDialog shareDialog;
 
     Target target = new Target() {
+
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
@@ -67,10 +68,12 @@ public class MainActivity extends AppCompatActivity {
                 shareDialog.show(content);
             }
         }
+
         @Override
         public void onBitmapFailed(Drawable errorDrawable) {
 
         }
+
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
 
@@ -88,9 +91,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
         //Init View
-        //btnShareLink = (Button)findViewById(R.id.btnShareLink);
+        btnShareLink = (Button)findViewById(R.id.btnShareLink);
         btnSharePhoto = (Button)findViewById(R.id.btnSharePhoto);
         btnShareVideo = (Button)findViewById(R.id.btnShareVideo);
 
@@ -99,15 +101,26 @@ public class MainActivity extends AppCompatActivity {
         shareDialog = new ShareDialog(this);
 
 
+        btnShareLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                        .setQuote("This is useful link")
+                        .setContentUrl(Uri.parse("https://youtube.com"))
+                        .build();
 
+                if(ShareDialog.canShow(ShareLinkContent.class))
+                {
+                    shareDialog.show(linkContent);
+                }
 
-
-
+            }
+        });
 
         btnSharePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("SHARE PHOTO",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
+
                 //Create callback
                 shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
                     @Override
@@ -125,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
 
 
                 //We will fetch photo from link and convert to bitmap
@@ -186,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void printKeyHash() {
-        Log.d("KeyHash",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
         try{
             PackageInfo info = getPackageManager().getPackageInfo("com.example.jeff.facebookshare", PackageManager.GET_SIGNATURES);
             for(Signature signature:info.signatures)
@@ -205,48 +216,4 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-
-    public void shareLink(View v){
-        ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                .setQuote("This is useful link")
-                .setContentUrl(Uri.parse("https://youtube.com"))
-                .build();
-
-        if(ShareDialog.canShow(ShareLinkContent.class))
-        {
-            shareDialog.show(linkContent);
-        }
-    }
-
-    public void sharePhoto(View v) {
-        Log.d("SHARE PHOTO",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
-        //Create callback
-        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-            @Override
-            public void onSuccess(Sharer.Result result) {
-                Toast.makeText(MainActivity.this, "Share successful", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancel() {
-                Toast.makeText(MainActivity.this, "Share cancel", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
-        //We will fetch photo from link and convert to bitmap
-        Picasso.with(getBaseContext())
-                .load("https://i.ytimg.com/vi/anqwEsZatSU/maxresdefault.jpg")
-                .into(target);
-    }
-
-
-
 }

@@ -58,7 +58,7 @@ public class ShareImgFa extends AppCompatActivity {
 
     //https://i.ytimg.com/vi/anqwEsZatSU/maxresdefault.jpg
 
-    Button btnShareLink,btnSharePhoto,btnShareVideo;
+    Button btnSharePhoto; //btnShareLink, btnShareVideo;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
 
@@ -103,20 +103,37 @@ public class ShareImgFa extends AppCompatActivity {
 
         //Init View
         //btnShareLink = (Button)findViewById(R.id.btnShareLink);
-        btnSharePhoto = (Button)findViewById(R.id.btnSharePhoto);
-        btnShareVideo = (Button)findViewById(R.id.btnShareVideo);
+        //btnSharePhoto = (Button)findViewById(R.id.btnSharePhoto);
+        //btnShareVideo = (Button)findViewById(R.id.btnShareVideo);
 
         //Init FB
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
 
-
+          /*
         btnSharePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("SHARE PHOTO",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
+
+                Toast.makeText(ShareImgFa.this, "SHARING IN FACE", Toast.LENGTH_SHORT).show();
+
+                Intent intent = getIntent();
+                String img_path = intent.getStringExtra(MainActivity.IMGPATH);
+                Bitmap image_path = BitmapFactory.decodeFile(img_path);
+
+                SharePhoto photo = new SharePhoto.Builder()
+                        .setBitmap(image_path)
+                        .setCaption("StudyTutorial")
+                        .build();
+                SharePhotoContent content = new SharePhotoContent.Builder()
+                        .addPhoto(photo)
+                        .build();
+                shareDialog.show(content);
                 //Create callback
 
+               * /
+            /*
                 shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
                     @Override
                     public void onSuccess(Sharer.Result result) {
@@ -136,12 +153,16 @@ public class ShareImgFa extends AppCompatActivity {
 
 
                 //We will fetch photo from link and convert to bitmap
-                Picasso.with(getBaseContext()).load("https://i.ytimg.com/vi/anqwEsZatSU/maxresdefault.jpg").into(target);
-            }
-        });
+                Intent intent = getIntent();
+                String imgpath = intent.getStringExtra(MainActivity.IMGPATH);
+                Picasso.with(getBaseContext()).load("/storage/emulated/0/DCIM/YNL/JPEG20181016_075621355917743.jpg").into(target);
+                */
+            //}
+
+        //});
 
 
-
+        /*
         btnShareVideo.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -156,8 +177,7 @@ public class ShareImgFa extends AppCompatActivity {
 
             }
         });
-
-
+        */
     }
 
 
@@ -235,4 +255,24 @@ public class ShareImgFa extends AppCompatActivity {
 
     }
 
+
+    public void share_photo(View v) {
+        Log.d("SHARE PHOTO",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
+
+        Toast.makeText(ShareImgFa.this, "SHARING IN FACE", Toast.LENGTH_SHORT).show();
+
+        Intent intent = getIntent();
+        String img_path = intent.getStringExtra(MainActivity.IMGPATH);
+        Bitmap image_path = BitmapFactory.decodeFile(img_path);
+
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(image_path)
+                .setCaption("StudyTutorial")
+                .build();
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+        shareDialog.show(content);
+
+    }
 }

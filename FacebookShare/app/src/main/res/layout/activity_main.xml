@@ -10,23 +10,22 @@
 
     <Button
         android:id="@+id/btnShareLink"
+        android:text="Share Link"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="shareLink"
-        android:text="Share Link" />
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/btnSharePhoto"
+        android:text="Share Photo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Share Photo" />
+        android:layout_height="wrap_content" />
 
 
     <Button
         android:id="@+id/btnShareVideo"
+        android:text="Share Video"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Share Video" />
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>

@@ -30,11 +30,11 @@
 
 
         <!--ESPECIFICAMOS EL PROVEEDOR !-->
-
-        <provider android:authorities="com.facebook.app.FacebookContentProvider2184957831751261"
+        <provider
+            android:authorities="com.facebook.app.FacebookContentProvider331731430710861"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true" />
-
+        
         
     </application>
 
