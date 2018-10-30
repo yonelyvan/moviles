@@ -110,10 +110,10 @@ public class Muro extends AppCompatActivity {
 
             //Intent intent = getIntent();
             String imgpath = picturePath; //intent.getStringExtra(MainActivity.IMGPATH);
-            //Log.e("SHOWIMG::",imgpath);
+            Log.e("SHOWIMG::",imgpath);
             IMGPATH = imgpath;
             ImageView imageView = (ImageView) findViewById(R.id.imgProfile);
-            imageView.setImageBitmap(BitmapFactory.decodeFile(IMGPATH));
+            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 
 
 
@@ -136,34 +136,40 @@ public class Muro extends AppCompatActivity {
         //Uri uri = data.getData();
 
         final ProgressDialog progressDialog =new ProgressDialog(this);
-        progressDialog.setTitle("Cargando...");
-        progressDialog.show();
+        try {
+            progressDialog.setTitle("Cargando...");
+            progressDialog.show();
+            updateUI(mAuth.getCurrentUser());
+            StorageReference filePath = m_storage.child("fotos").child(uri.getLastPathSegment());
 
 
-        StorageReference filePath = m_storage.child("fotos").child(uri.getLastPathSegment());
 
 
-        filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(Muro.this,"Se subio exitosamente la foto",Toast.LENGTH_LONG).show();
-                progressDialog.hide();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
-                Toast.makeText(Muro.this,"Failed"+ e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = 100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount();
-                        progressDialog.setMessage("Cargando "+ (int)progress + "%");
-                    }
-                });
+            filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(Muro.this,"Se subio exitosamente la foto",Toast.LENGTH_LONG).show();
+                    progressDialog.hide();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
+                    Toast.makeText(Muro.this,"Failed"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = 100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount();
+                            progressDialog.setMessage("Cargando "+ (int)progress + "%");
+                        }
+                    });
 
+
+        } catch (Exception e) {
+            Log.e("SNET", "exception", e);
+        }
 
         //uri to path
         /*
