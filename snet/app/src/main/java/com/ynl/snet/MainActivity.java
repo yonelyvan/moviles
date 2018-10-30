@@ -57,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText Txt2;
     public String TAG = "MASSAGE";
 
+    //sescion
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,7 +155,12 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
     public void updateUI(FirebaseUser myuserobj){
-        Txt2.setText(myuserobj.getEmail());
+        try {
+            Txt2.setText(myuserobj.getEmail());
+        } catch (Exception e) {
+            Log.e("SNET", "NO existe sesion iniciada", e);
+        }
+
     }
 
 
@@ -265,5 +273,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 
 }

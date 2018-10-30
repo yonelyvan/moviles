@@ -6,14 +6,54 @@
     android:layout_height="match_parent"
     tools:context=".Muro">
 
-    <TextView
-        android:id="@+id/txt_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="174dp"
-        tools:layout_editor_absoluteY="231dp" />
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="sign_out"
+            android:text="Cerrar sesión" />
+
+        <TextView
+            android:id="@+id/txt_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+
+        <ImageButton
+            android:id="@+id/choose_img"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="openGallery"
+            app:srcCompat="@mipmap/gallery50" />
+
+
+        <ImageView
+            android:id="@+id/imgProfile"
+            android:layout_width="match_parent"
+            android:layout_height="377dp"
+            app:srcCompat="@drawable/com_facebook_profile_picture_blank_portrait" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="cargar_foto"
+            app:srcCompat="@mipmap/up52" />
+    </LinearLayout>
+
+    </ScrollView>
 
 
 
