@@ -40,5 +40,22 @@
             android:layout_height="wrap_content"
             android:onClick="loguearUsuario"
             android:text="Login" />
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="30dp"
+            android:onClick="buttonclickLoginFb" />
+
+        <EditText
+            android:id="@+id/t2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

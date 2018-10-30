@@ -44,14 +44,14 @@ public class MainActivity extends AppCompatActivity {
     private EditText TextPassword;
     private ProgressDialog progressDialog;
 
-    private FirebaseAuth auth;
+    private FirebaseAuth mAuth;
 
 
     //Declaramos un objeto firebaseAuth
     private FirebaseAuth firebaseAuth;
 
     //facebook
-    private CallbackManager callbackManager;
+    CallbackManager mCallbackManager; //callbackManager;
 
     LoginButton loginButton;
     private EditText Txt2;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
 
         //facebook
-
+        /*
         loginButton = (LoginButton) findViewById(R.id.login_button);
         callbackManager = CallbackManager.Factory.create();
         loginButton.setReadPermissions(Arrays.asList("email"));
@@ -78,9 +78,33 @@ public class MainActivity extends AppCompatActivity {
         Txt2 = (EditText) findViewById(R.id.t2);
 
         //printKeyHash();
+        */
 
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        // Initialize Facebook Login button
+        mCallbackManager = CallbackManager.Factory.create();
+        LoginButton loginButton = findViewById(R.id.login_button);
+        loginButton.setReadPermissions("email");
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d("MESSAGE:", "facebook:onSuccess:" + loginResult);
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
 
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "facebook:onCancel");
+                // ...
+            }
 
+            @Override
+            public void onError(FacebookException error) {
+                Log.d(TAG, "facebook:onError", error);
+                // ...
+            }
+        });
 
 
     }
@@ -98,11 +122,48 @@ public class MainActivity extends AppCompatActivity {
     }*/
 
 
+    private void handleFacebookAccessToken(AccessToken token) {
+        Log.d(TAG, "handleFacebookAccessToken:" + token);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                        // ...
+                    }
+                });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Pass the activity result back to the Facebook SDK
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void updateUI(FirebaseUser myuserobj){
+        Txt2.setText(myuserobj.getEmail());
+    }
 
 
 
-
-
+/*
 
     public void buttonclickLoginFb(View view){
         //loginButton.setFragment(this);
@@ -156,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+*/
 
 
     //Registro de usuario con firebase
@@ -179,21 +240,21 @@ public class MainActivity extends AppCompatActivity {
 
         //creating a new user
         firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){//exito
-                            Toast.makeText(MainActivity.this,"Se ha registrado el usuario con el email: "+ TextEmail.getText(),Toast.LENGTH_LONG).show();
-                        }else {
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {//si se presenta una colisión
-                                Toast.makeText(MainActivity.this, "EL usuario ya existe ", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(MainActivity.this, "No se pudo registrar el usuario ", Toast.LENGTH_LONG).show();
-                            }
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){//exito
+                        Toast.makeText(MainActivity.this,"Se ha registrado el usuario con el email: "+ TextEmail.getText(),Toast.LENGTH_LONG).show();
+                    }else {
+                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {//si se presenta una colisión
+                            Toast.makeText(MainActivity.this, "EL usuario ya existe ", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "No se pudo registrar el usuario ", Toast.LENGTH_LONG).show();
                         }
-                        progressDialog.dismiss();
                     }
-                });
+                    progressDialog.dismiss();
+                }
+            });
     }
 
 
