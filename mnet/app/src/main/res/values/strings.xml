@@ -11,7 +11,7 @@
     <string name="hint_name">Full Name</string>
     <string name="btn_login">ENTRAR</string>
     <string name="btn_register">REGISTRAR</string>
-    <string name="btn_link_to_register">Crear nueva centa.</string>
+    <string name="btn_link_to_register">Crear nueva cuenta.</string>
     <string name="btn_link_to_login">Already registred! Login Me.</string>
     <string name="welcome">Bienvenido</string>
     <string name="btn_logout">SALIR</string>

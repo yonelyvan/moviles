@@ -33,49 +33,16 @@ public class MainActivity extends AppCompatActivity {
         //inicializamos el objeto firebaseAuth
         mAuth = FirebaseAuth.getInstance();
 
-        TextEmail = (EditText) findViewById(R.id.txt_email);
-        TextPassword = (EditText) findViewById(R.id.txt_password);
+        TextEmail = (EditText) findViewById(R.id.email);
+        TextPassword = (EditText) findViewById(R.id.password);
         progressDialog = new ProgressDialog(this);
+
+        //
+        getSupportActionBar().hide();
+
+
     }
 
-
-
-    //Registro de usuario con firebase
-    public void registrarUsuario(View view){
-        String email = TextEmail.getText().toString().trim();
-        String password  = TextPassword.getText().toString().trim();
-
-        //verificacion de entrada
-        if(TextUtils.isEmpty(email)){
-            Toast.makeText(this,"Se debe ingresar un email",Toast.LENGTH_LONG).show();
-            return;
-        }
-        if(password.length()<6){
-            Toast.makeText(this,"Escribir contraseña con almenos 6 caracteres",Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        progressDialog.setMessage("Registrando en linea...");
-        progressDialog.show();
-
-        //creating a new user
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){//exito
-                            Toast.makeText(MainActivity.this,"Se ha registrado el usuario con el email: "+ TextEmail.getText(),Toast.LENGTH_LONG).show();
-                        }else {
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {//si se presenta una colisión
-                                Toast.makeText(MainActivity.this, "EL usuario ya existe ", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(MainActivity.this, "No se pudo registrar el usuario ", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        progressDialog.dismiss();
-                    }
-                });
-    }
 
 
 
