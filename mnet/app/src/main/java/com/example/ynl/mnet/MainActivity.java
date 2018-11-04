@@ -39,29 +39,21 @@ public class MainActivity extends AppCompatActivity {
 
         //
         getSupportActionBar().hide();
-
-
     }
-
-
-
 
     public  void loguearUsuario(View view) {
         //Obtenemos el email y la contraseña desde las cajas de texto
         final String email = TextEmail.getText().toString().trim();
         String password = TextPassword.getText().toString().trim();
-
         //Verificamos que las cajas de texto no esten vacías
         if (TextUtils.isEmpty(email)) {//(precio.equals(""))
             Toast.makeText(this, "Se debe ingresar un email", Toast.LENGTH_LONG).show();
             return;
         }
-
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, "Falta ingresar la contraseña", Toast.LENGTH_LONG).show();
             return;
         }
-
         progressDialog.setMessage("Realizando consulta en linea...");
         progressDialog.show();
 
@@ -78,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
                             //Intent intencion = new Intent(getApplication(), Muro.class);
                             //intencion.putExtra(Muro.user, user);
                             //startActivity(intencion);
-
-
                         } else {
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {//si se presenta una colisión
                                 Toast.makeText(MainActivity.this, "Ese usuario ya existe ", Toast.LENGTH_SHORT).show();
@@ -90,7 +80,15 @@ public class MainActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 });
+    }
 
+    public void goto_register_activity(View v){
+        Intent intent  = new  Intent(getApplication(), RegisterActivity.class);
+        startActivity(intent);
+    }
 
+    public void goto_muro_activity(View v){
+        //Intent intent  = new  Intent(getApplication(), RegisterActivity.class);
+        //startActivity(intent);
     }
 }
