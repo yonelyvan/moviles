@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     //defining view objects
@@ -64,18 +66,10 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //checking if success
                         if (task.isSuccessful()) {
-                            int pos = email.indexOf("@");
-                            String user = email.substring(0, pos);
                             Toast.makeText(MainActivity.this, "Bienvenido al MURO: " + TextEmail.getText(), Toast.LENGTH_LONG).show();
-                            //Intent intencion = new Intent(getApplication(), Muro.class);
-                            //intencion.putExtra(Muro.user, user);
-                            //startActivity(intencion);
+                            goto_muro_activity();//
                         } else {
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {//si se presenta una colisión
-                                Toast.makeText(MainActivity.this, "Ese usuario ya existe ", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(MainActivity.this, "No se pudo registrar el usuario ", Toast.LENGTH_LONG).show();
-                            }
+                                Toast.makeText(MainActivity.this, "Error de autenticación", Toast.LENGTH_LONG).show();
                         }
                         progressDialog.dismiss();
                     }
@@ -87,8 +81,24 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void goto_muro_activity(View v){
-        //Intent intent  = new  Intent(getApplication(), RegisterActivity.class);
-        //startActivity(intent);
+    public void goto_muro_activity(){
+        ver_estado();
+        Intent intent  = new  Intent(getApplication(), MnetActivity.class);
+        startActivity(intent);
+    }
+
+    private void ver_estado(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            try {
+                Log.e("EMAIL", user.getEmail());
+                Log.e("USERNAME", user.getDisplayName());
+            } catch (Exception e) {
+                Log.e("MNET", "exception", e);
+            }
+        } else {
+            // No user is signed in
+            Log.e("NO USER", "NULL");
+        }
     }
 }

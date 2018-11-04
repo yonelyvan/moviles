@@ -22,7 +22,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 public class RegisterActivity extends AppCompatActivity {
 
     //defining view objects
-    private EditText TextNickname;
+    private EditText TextUsername;
     private EditText TextEmail;
     private EditText TextPassword;
     private EditText TextPassword2;
@@ -40,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
         //inicializamos el objeto firebaseAuth
         mAuth = FirebaseAuth.getInstance();
 
-        TextNickname = (EditText) findViewById(R.id.nickname);
+        TextUsername = (EditText) findViewById(R.id.username);
         TextEmail = (EditText) findViewById(R.id.email);
         TextPassword = (EditText) findViewById(R.id.password);
         TextPassword2 = (EditText) findViewById(R.id.password2);
@@ -54,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     //Registro de usuario con firebase
     public void registrarUsuario(View view){
-        String nickname = TextNickname.getText().toString().trim();
+        final String username = TextUsername.getText().toString().trim();
         String email = TextEmail.getText().toString().trim();
         String password  = TextPassword.getText().toString().trim();
         String password2  = TextPassword2.getText().toString().trim();
@@ -83,7 +83,9 @@ public class RegisterActivity extends AppCompatActivity {
                         if(task.isSuccessful()){//exito
                             Toast.makeText(RegisterActivity.this,"Se ha registrado el usuario con el email: "+ TextEmail.getText(),Toast.LENGTH_LONG).show();
                             //add username
-                            addUserNameToUser(task.getResult().getUser());
+                            addUserNameToUser(task.getResult().getUser(),username);
+                            //redirigir al login
+                            goto_LoginActivity();
 
                         }else {
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {//si se presenta una colisión
@@ -95,11 +97,10 @@ public class RegisterActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 });
-        //goto_LoginActivity();//redirigir al login
     }
 
-    private void addUserNameToUser(FirebaseUser user) {
-        String username = "YONELYVAN";
+
+    public void addUserNameToUser(FirebaseUser user, String username) {
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(username)
                 //.setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
@@ -112,7 +113,7 @@ public class RegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.e("ECHO:", "Usuario actualizado.");
                         }else{
-                            Log.e("ERROR:", "No se puedo actualizar nickname.");
+                            Log.e("ERROR:", "No se puedo actualizar nombre de usuario.");
                         }
                     }
                 });

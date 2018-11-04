@@ -1,10 +1,13 @@
 <resources>
-    <string name="app_name">mnet</string>
+    <string name="app_name">Art f1.4</string>
 
-    <string name="title_activity_muro">muro</string>
+    <!-- MENU -->
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_muro">Art f1.4</string>
+    <string name="title_chat">Chat</string>
+
 
     <string name="hint_email">Correo</string>
     <string name="hint_password">Contraseña</string>
@@ -16,4 +19,8 @@
     <string name="welcome">Bienvenido</string>
     <string name="btn_logout">SALIR</string>
     <string name="name">Fullname</string>
+    <string name="title_activity_mnet">MnetActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

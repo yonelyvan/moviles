@@ -38,7 +38,7 @@
                 app:srcCompat="@mipmap/art" />
 
             <EditText
-                android:id="@+id/nickname"
+                android:id="@+id/username"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
