@@ -2,10 +2,10 @@
     <string name="app_name">Art f1.4</string>
 
     <!-- MENU -->
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="title_muro">Art f1.4</string>
+    <string name="title_notifications">Notificaciones</string>
+    <string name="title_dashboard">Art f1.4</string>
+    <string name="title_plus"></string>
+    <string name="title_muro">Muro</string>
     <string name="title_chat">Chat</string>
 
 
