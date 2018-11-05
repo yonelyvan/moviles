@@ -21,6 +21,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 
@@ -35,7 +38,7 @@ public class MnetActivity extends AppCompatActivity {
     public String IMGPATH="null";
     private static int RESULT_LOAD_IMAGE = 1;
 
-    //private StorageReference m_storage;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -95,11 +98,7 @@ public class MnetActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    //plus: to upload photo
-    public void openGallery(View v){
-        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(i, RESULT_LOAD_IMAGE);
-    }
+
 
     //seleccion de imagen de galeria
     @Override
@@ -138,53 +137,7 @@ public class MnetActivity extends AppCompatActivity {
         }
     }
 
-    public void cargar_foto(View v){
-        Intent intent = getIntent();
-        String imgpath = intent.getStringExtra(IMGPATH);
-        Log.e("ERRORRRRRRRRR::",imgpath);
-        File IMG_file = new File(imgpath);
-        Log.e("ERRORRRRRRRRR::",IMG_file.getPath());
-        Uri uri = Uri.fromFile(IMG_file);
-        //Uri uri = data.getData();
 
-        final ProgressDialog progressDialog =new ProgressDialog(this);
-        progressDialog.setTitle("Cargando...");
-        progressDialog.show();
-
-/*
-        StorageReference filePath = m_storage.child("fotos").child(uri.getLastPathSegment());
-
-
-        filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(com.example.ynl.camara.UploadPhoto.this,"Se subio exitosamente la foto",Toast.LENGTH_LONG).show();
-                progressDialog.hide();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
-                Toast.makeText(UploadPhoto.this,"Failed"+ e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = 100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount();
-                        progressDialog.setMessage("Cargando "+ (int)progress + "%");
-                    }
-                });
-*/
-
-        //uri to path
-        /*
-        String path = MainActivity.IMGPATH; //uri_to_path(uri);
-        Log.e(MainActivity.TAG,path);
-        ImageView imageView = (ImageView) findViewById(R.id.imgChoosed);
-        imageView.setImageBitmap(BitmapFactory.decodeFile(path));
-        */
-    }
 
 
 
