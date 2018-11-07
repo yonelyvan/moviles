@@ -3,6 +3,7 @@ package com.example.ynl.mnet;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -19,35 +21,44 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class FragmentPlus extends Fragment {
     private FirebaseUser user;
     public static final String TAG = "PLUS";
 
     private StorageReference m_storage;
     public String IMGPATH="null";
+    public Uri IMGURI;
 
     private static int RESULT_LOAD_IMAGE = 1;
 
     private View view;
 
+    //Database
+    private StorageReference mStorageRef;
+    private DatabaseReference mDatabaseRef;
+
+    private StorageTask mUploadTask;
+    private ProgressBar mProgressBar;
 
     public FragmentPlus() {
         // Required empty public constructor
@@ -61,9 +72,14 @@ public class FragmentPlus extends Fragment {
         view = inflater.inflate(R.layout.fragment_plus, container, false);
         conf_btn_open_gallery();
         conf_btn_upload_photo();
+        mProgressBar = view.findViewById(R.id.progress_bar);
         m_storage = FirebaseStorage.getInstance().getReference();
+        //database
+        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
-        return view;//inflater.inflate(R.layout.fragment_plus, container, false);
+
+        return view;
     }
 
 
@@ -77,8 +93,6 @@ public class FragmentPlus extends Fragment {
             Log.e("PLUS ERROR","no existe sesion:");
         }
     }
-
-
 
 
     public void conf_btn_open_gallery(){
@@ -101,12 +115,14 @@ public class FragmentPlus extends Fragment {
         });
     }
 
+    //button upload
     public void conf_btn_upload_photo(){
         view.findViewById(R.id.btn_upload).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.e(TAG,"Upload photo");
-                cargar_foto();
+                //cargar_foto();
+                uploadFile();
             }
         });
     }
@@ -133,6 +149,7 @@ public class FragmentPlus extends Fragment {
         //super method removed
         if (resultCode == MnetActivity.RESULT_OK && requestCode == RESULT_LOAD_IMAGE) {
             Uri returnUri = data.getData();
+            IMGURI = returnUri;
             IMGPATH = getRealPathFromURI(this.getContext(),returnUri);
             showImage();
             Log.e(TAG, IMGPATH);
@@ -162,14 +179,10 @@ public class FragmentPlus extends Fragment {
         progressDialog.setTitle("Cargando...");
         progressDialog.show();
 
-        //
         String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Log.e(TAG,userUid);
 
         StorageReference filePath = m_storage.child("galeria/user-"+userUid).child(uri.getLastPathSegment());
-        //StorageReference imagesRef = m_storage.child("images");
-
-
         filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -190,18 +203,11 @@ public class FragmentPlus extends Fragment {
                         progressDialog.setMessage("Cargando "+ (int)progress + "%");
                     }
                 });
-
-
-        //uri to path
-
     }
 
-    /**
-     * Gets the file path from a given URI.
-     * @param context
-     * @param contentUri
-     * @return
-     */
+
+
+
     private String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
@@ -227,53 +233,55 @@ public class FragmentPlus extends Fragment {
         }
     }
 
-
-
-    /*
-    *
-    *     public void cargar_foto(){
-        //Intent intent = getIntent();
-        String imgpath = IMGPATH;//intent.getStringExtra(IMGPATH);
-        Log.e("ERRORRRRRRRRR::",imgpath);
-        File IMG_file = new File(imgpath);
-        Log.e("ERRORRRRRRRRR::",IMG_file.getPath());
-        Uri uri = Uri.fromFile(IMG_file);
-        //Uri uri = data.getData();
-
-        final ProgressDialog progressDialog =new ProgressDialog(getActivity());
-        progressDialog.setTitle("Cargando...");
-        progressDialog.show();
-
-
-        StorageReference filePath = m_storage.child("fotos").child(uri.getLastPathSegment());
-
-
-        filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(getActivity(),"Se subio exitosamente la foto",Toast.LENGTH_LONG).show();
-                progressDialog.hide();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
-                Toast.makeText(getActivity(),"Failed"+ e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = 100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount();
-                        progressDialog.setMessage("Cargando "+ (int)progress + "%");
-                    }
-                });
-
-
-        //uri to path
-
+    private String getFileExtension(Uri uri){
+        ContentResolver cR = this.getContext().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
     }
-    * */
+
+
+    private void uploadFile() {
+        if (IMGURI != null) {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+                    + "." + getFileExtension(IMGURI));
+
+            mUploadTask = fileReference.putFile(IMGURI)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressBar.setProgress(0);
+                                }
+                            }, 500);
+
+                            Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
+                            Upload upload = new Upload(IMGURI.getLastPathSegment(), taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+                            String uploadId = mDatabaseRef.push().getKey();
+                            mDatabaseRef.child(uploadId).setValue(upload);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            mProgressBar.setProgress((int) progress);
+                        }
+                    });
+        } else {
+            Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
 
 }
