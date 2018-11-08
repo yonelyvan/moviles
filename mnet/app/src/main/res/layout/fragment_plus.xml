@@ -19,7 +19,7 @@
         <ImageView
             android:id="@+id/img_to_upĺoad"
             android:layout_width="match_parent"
-            android:layout_height="720px"
+            android:layout_height="1024px"
             android:src="@mipmap/difragma" />
         <ProgressBar
             android:id="@+id/progress_bar"

@@ -12,20 +12,30 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MnetActivity extends AppCompatActivity {
     FragmentNotificaciones fragmentNotificaciones;
@@ -37,6 +47,7 @@ public class MnetActivity extends AppCompatActivity {
     public static final String TAG = "MNET";
     public String IMGPATH="null";
     private static int RESULT_LOAD_IMAGE = 1;
+
 
 
 
@@ -90,6 +101,8 @@ public class MnetActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+
+
     }
 
     public void setFragment(Fragment fragment){
@@ -136,7 +149,6 @@ public class MnetActivity extends AppCompatActivity {
             //startActivity(intent);
         }
     }
-
 
 
 

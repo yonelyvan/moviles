@@ -26,8 +26,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -59,6 +62,7 @@ public class FragmentPlus extends Fragment {
 
     private StorageTask mUploadTask;
     private ProgressBar mProgressBar;
+
 
     public FragmentPlus() {
         // Required empty public constructor
@@ -242,9 +246,52 @@ public class FragmentPlus extends Fragment {
 
     private void uploadFile() {
         if (IMGURI != null) {
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
-                    + "." + getFileExtension(IMGURI));
+            String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            final String file_name = userUid +"-"+ System.currentTimeMillis() + "." + getFileExtension(IMGURI); //filename
+            //final StorageReference fileReference = mStorageRef.child( "uploads" ); //file_name
 
+            //Uri file_uri = Uri.fromFile(new File(IMGPATH));
+            //UploadTask uploadTask = mStorageRef.putFile(file_uri);
+
+
+            final StorageReference ref = mStorageRef.child(file_name);
+            UploadTask  uploadTask = ref.putFile(IMGURI);
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+                    return ref.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        String downloadURL = downloadUri.toString();
+                        Log.e(TAG+"ULR",downloadURL);
+                        //
+                        Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
+                        //Upload upload = new Upload(IMGURI.getLastPathSegment(), fileReference.getDownloadUrl().toString());
+                        Upload upload = new Upload(file_name, downloadURL);
+                        String uploadId = mDatabaseRef.push().getKey();
+                        mDatabaseRef.child(uploadId).setValue(upload);
+
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
+                }
+            });
+
+
+
+
+            /*
             mUploadTask = fileReference.putFile(IMGURI)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -258,7 +305,8 @@ public class FragmentPlus extends Fragment {
                             }, 500);
 
                             Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
-                            Upload upload = new Upload(IMGURI.getLastPathSegment(), taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+                            //Upload upload = new Upload(IMGURI.getLastPathSegment(), fileReference.getDownloadUrl().toString());
+                            Upload upload = new Upload(file_name, fileReference.getDownloadUrl().toString());
                             String uploadId = mDatabaseRef.push().getKey();
                             mDatabaseRef.child(uploadId).setValue(upload);
                         }
@@ -276,6 +324,8 @@ public class FragmentPlus extends Fragment {
                             mProgressBar.setProgress((int) progress);
                         }
                     });
+
+            */
         } else {
             Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
         }
