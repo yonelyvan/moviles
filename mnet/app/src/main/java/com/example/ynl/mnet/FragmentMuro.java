@@ -1,6 +1,7 @@
 package com.example.ynl.mnet;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,29 +43,34 @@ public class FragmentMuro extends Fragment {
 
     //
     private View view;
+    public static final String TAG = "FragmentoMuro";
 
+    //
+    private Context mContext;
 
     public FragmentMuro() {
         // Required empty public constructor
+        mContext = getContext();
+        //mContext = getActivity();
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         validar_sesion();
-
+        mContext = getContext();
 
         view = inflater.inflate(R.layout.fragment_muro, container, false);
-        //redirigir a la actividad mostra fotos (aqui! mismo)
-        //openImagesActivity();
-        // Inflate the layout for this fragment
+         //
+        ver_imagenes(view);
+        return view; //inflater.inflate(R.layout.fragment_muro, container, false);
+    }
 
 
-
-
+    public void ver_imagenes(View view){
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
         mProgressCircle = view.findViewById(R.id.progress_circle);
 
@@ -80,7 +86,7 @@ public class FragmentMuro extends Fragment {
                     mUploads.add(upload);
                 }
 
-                mAdapter = new ImageAdapter(getActivity(), mUploads);
+                mAdapter = new ImageAdapter(mContext, mUploads);
 
                 mRecyclerView.setAdapter(mAdapter);
                 mProgressCircle.setVisibility(View.INVISIBLE);
@@ -88,15 +94,14 @@ public class FragmentMuro extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 mProgressCircle.setVisibility(View.INVISIBLE);
             }
         });
-
-
-        //
-        return inflater.inflate(R.layout.fragment_muro, container, false);
     }
+
+
+
 
     public void validar_sesion(){
         user = FirebaseAuth.getInstance().getCurrentUser();
