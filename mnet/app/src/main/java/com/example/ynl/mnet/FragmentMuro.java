@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class FragmentMuro extends Fragment {
     private ImageAdapter mAdapter;
 
     private ProgressBar mProgressCircle;
+    private TextView txt_name;
 
     private DatabaseReference mDatabaseRef;
     private List<Post> mPosts;
@@ -73,17 +76,20 @@ public class FragmentMuro extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
         mProgressCircle = view.findViewById(R.id.progress_circle);
+        txt_name = view.findViewById(R.id.txt_name);
+        txt_name.setText(user.getDisplayName());
 
         mPosts = new ArrayList<>();
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());//get images from a specific user
+        //Query Q = mDatabaseRef.orderByPriority();
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Post post= postSnapshot.getValue(Post.class);
-                    mPosts.add(post);
+                    mPosts.add(0,post);
                 }
 
                 mAdapter = new ImageAdapter(mContext, mPosts);

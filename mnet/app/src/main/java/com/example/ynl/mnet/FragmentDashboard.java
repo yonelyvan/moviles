@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -75,13 +76,13 @@ public class FragmentDashboard extends Fragment {
         mPosts = new ArrayList<>();
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("shared");//get images from a shared "table"
-
+        //Query Q = mDatabaseRef.limitToLast(15);
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Post post= postSnapshot.getValue(Post.class);
-                    mPosts.add(post);
+                    mPosts.add(0,post);
                 }
 
                 mAdapter = new ImageAdapter(mContext, mPosts);
