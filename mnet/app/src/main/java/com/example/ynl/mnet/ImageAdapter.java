@@ -12,6 +12,9 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
+
+import java.sql.Date;
+import java.time.Instant;
 import java.util.List;
 
 
@@ -40,7 +43,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         Post postCurrent = mPosts.get(position);
         holder.textViewUsername.setText(postCurrent.get_user_id());
-        holder.textViewDate.setText("fecha:");
+
+        //Date date = Date.from( Instant.ofEpochSecond( postCurrent.get_unix_time() ) );
+        Date date = new Date(postCurrent.get_unix_time()*1000L);
+        holder.textViewDate.setText(date.toString());
         holder.textViewComentario.setText(postCurrent.get_comment());
         Picasso.get()
                 .load(postCurrent.get_img_url())
