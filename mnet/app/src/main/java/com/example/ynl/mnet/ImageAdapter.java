@@ -17,13 +17,13 @@ import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context mContext;
-    private List<Upload> mUploads;
+    private List<Post> mPosts;
     private FirebaseUser user;
     public static final String TAG = "ImageAdapter";
 
-    public ImageAdapter(Context context, List<Upload> uploads) {
+    public ImageAdapter(Context context, List<Post> posts) {
         mContext = context;
-        mUploads = uploads;
+        mPosts = posts;
     }
 
     @Override
@@ -35,23 +35,23 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         user = FirebaseAuth.getInstance().getCurrentUser();
-        Upload uploadCurrent = mUploads.get(position);
+        Post postCurrent = mPosts.get(position);
         holder.textViewUsername.setText(user.getDisplayName());
         holder.textViewDate.setText("fecha:");
-        holder.textViewComentario.setText(uploadCurrent.getName());
+        holder.textViewComentario.setText(postCurrent.get_comment());
         Picasso.get()
-                .load(uploadCurrent.getImageUrl())
+                .load(postCurrent.get_img_url())
                 .placeholder(R.mipmap.ic_launcher)
                 .fit()
                 .centerCrop()
                 .into(holder.imageView);
 
-        Log.e(TAG+"-URL:",uploadCurrent.getImageUrl());
+        Log.e(TAG+"-URL:",postCurrent.get_img_url());
     }
 
     @Override
     public int getItemCount() {
-        return mUploads.size();
+        return mPosts.size();
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {

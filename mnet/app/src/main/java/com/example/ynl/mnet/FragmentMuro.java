@@ -39,7 +39,7 @@ public class FragmentMuro extends Fragment {
     private ProgressBar mProgressCircle;
 
     private DatabaseReference mDatabaseRef;
-    private List<Upload> mUploads;
+    private List<Post> mPosts;
 
     //
     private View view;
@@ -74,19 +74,19 @@ public class FragmentMuro extends Fragment {
 
         mProgressCircle = view.findViewById(R.id.progress_circle);
 
-        mUploads = new ArrayList<>();
+        mPosts = new ArrayList<>();
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());//get images from a specific user
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Upload upload = postSnapshot.getValue(Upload.class);
-                    mUploads.add(upload);
+                    Post post= postSnapshot.getValue(Post.class);
+                    mPosts.add(post);
                 }
 
-                mAdapter = new ImageAdapter(mContext, mUploads);
+                mAdapter = new ImageAdapter(mContext, mPosts);
 
                 mRecyclerView.setAdapter(mAdapter);
                 mProgressCircle.setVisibility(View.INVISIBLE);

@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -59,9 +60,11 @@ public class FragmentPlus extends Fragment {
     //Database
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
+    private DatabaseReference mDatabaseRef_shared;
 
     private StorageTask mUploadTask;
     private ProgressBar mProgressBar;
+    private EditText mDescription;
 
 
     public FragmentPlus() {
@@ -77,10 +80,12 @@ public class FragmentPlus extends Fragment {
         conf_btn_open_gallery();
         conf_btn_upload_photo();
         mProgressBar = view.findViewById(R.id.progress_bar);
+        mDescription = view.findViewById(R.id.text_description);
         m_storage = FirebaseStorage.getInstance().getReference();
         //database
-        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        mStorageRef = FirebaseStorage.getInstance().getReference("img");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users");
+        mDatabaseRef_shared = FirebaseDatabase.getInstance().getReference("shared");
 
 
         return view;
@@ -171,43 +176,7 @@ public class FragmentPlus extends Fragment {
 
 
 
-    public void cargar_foto(){
-        //Intent intent = getIntent();
-        String imgpath = IMGPATH;//intent.getStringExtra(IMGPATH);
-        Log.e(TAG,imgpath);
-        File IMG_file = new File(imgpath);
-        Uri uri = Uri.fromFile(IMG_file);
-        //Uri uri = data.getData();
 
-        final ProgressDialog progressDialog =new ProgressDialog(getActivity());
-        progressDialog.setTitle("Cargando...");
-        progressDialog.show();
-
-        String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Log.e(TAG,userUid);
-
-        StorageReference filePath = m_storage.child("galeria/user-"+userUid).child(uri.getLastPathSegment());
-        filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(getActivity(),"Se subio exitosamente la foto",Toast.LENGTH_LONG).show();
-                progressDialog.hide();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
-                Toast.makeText(getActivity(),"Failed"+ e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = 100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount();
-                        progressDialog.setMessage("Cargando "+ (int)progress + "%");
-                    }
-                });
-    }
 
 
 
@@ -244,18 +213,77 @@ public class FragmentPlus extends Fragment {
     }
 
 
+
+    public void cargar_foto(){
+        //Intent intent = getIntent();
+        String imgpath = IMGPATH;//intent.getStringExtra(IMGPATH);
+        Log.e(TAG,imgpath);
+        File IMG_file = new File(imgpath);
+        Uri uri = Uri.fromFile(IMG_file);
+        //Uri uri = data.getData();
+
+        final ProgressDialog progressDialog =new ProgressDialog(getActivity());
+        progressDialog.setTitle("Cargando...");
+        progressDialog.show();
+
+        String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Log.e(TAG,userUid);
+
+        StorageReference filePath = m_storage.child("galeria/user-"+userUid).child(uri.getLastPathSegment());
+        filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(getActivity(),"Se subio exitosamente la foto",Toast.LENGTH_LONG).show();
+                progressDialog.hide();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(getActivity(),"Failed"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = 100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount();
+                    progressDialog.setMessage("Cargando "+ (int)progress + "%");
+                }
+        });
+    }
+
     private void uploadFile() {
         if (IMGURI != null) {
-            String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            final String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             final String file_name = userUid +"-"+ System.currentTimeMillis() + "." + getFileExtension(IMGURI); //filename
-            //final StorageReference fileReference = mStorageRef.child( "uploads" ); //file_name
 
-            //Uri file_uri = Uri.fromFile(new File(IMGPATH));
-            //UploadTask uploadTask = mStorageRef.putFile(file_uri);
+            //progress bar
+            final ProgressDialog progressDialog =new ProgressDialog(getActivity());
+            progressDialog.setTitle("Cargando...");
+            progressDialog.show();
 
 
             final StorageReference ref = mStorageRef.child(file_name);
-            UploadTask  uploadTask = ref.putFile(IMGURI);
+            ///begin progress bar
+            final UploadTask  uploadTask = (UploadTask) ref.putFile(IMGURI).addOnSuccessListener(new OnSuccessListener<UploadTask. TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(getActivity(),"Se subio exitosamente la foto",Toast.LENGTH_LONG).show();
+                    progressDialog.hide();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getActivity(),"Failed"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = 100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount();
+                    progressDialog.setMessage("Cargando "+ (int)progress + "%");
+                }
+            });
+            //end progress bar
 
             Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
@@ -266,6 +294,7 @@ public class FragmentPlus extends Fragment {
 
                     // Continue with the task to get the download URL
                     return ref.getDownloadUrl();
+                    /////////////////
                 }
             }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
@@ -275,61 +304,27 @@ public class FragmentPlus extends Fragment {
                         String downloadURL = downloadUri.toString();
                         Log.e(TAG+"ULR",downloadURL);
                         //
-                        Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
-                        //Upload upload = new Upload(IMGURI.getLastPathSegment(), fileReference.getDownloadUrl().toString());
-                        Upload upload = new Upload(file_name, downloadURL);
+                        long unix_time = System.currentTimeMillis() / 1000L;
+                        String comment = mDescription.getText().toString().trim();
+                        Post post = new Post(userUid,downloadURL,unix_time,comment );
                         String uploadId = mDatabaseRef.push().getKey();
-                        mDatabaseRef.child(uploadId).setValue(upload);
+                        mDatabaseRef.child(userUid).child(uploadId).setValue(post);//save for especific user
+                        mDatabaseRef_shared.child(uploadId).setValue(post);//save for all users
+                        Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
+
 
                     } else {
                         // Handle failures
-                        // ...
                     }
                 }
+
             });
 
-
-
-
-            /*
-            mUploadTask = fileReference.putFile(IMGURI)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mProgressBar.setProgress(0);
-                                }
-                            }, 500);
-
-                            Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
-                            //Upload upload = new Upload(IMGURI.getLastPathSegment(), fileReference.getDownloadUrl().toString());
-                            Upload upload = new Upload(file_name, fileReference.getDownloadUrl().toString());
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            mProgressBar.setProgress((int) progress);
-                        }
-                    });
-
-            */
         } else {
             Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
 
