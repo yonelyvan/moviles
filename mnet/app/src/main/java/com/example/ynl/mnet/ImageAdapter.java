@@ -35,8 +35,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+        //FirebaseUser =ref.child('users').orderByChild('name').equalTo('Alex')
+
         Post postCurrent = mPosts.get(position);
-        holder.textViewUsername.setText(user.getDisplayName());
+        holder.textViewUsername.setText(postCurrent.get_user_id());
         holder.textViewDate.setText("fecha:");
         holder.textViewComentario.setText(postCurrent.get_comment());
         Picasso.get()

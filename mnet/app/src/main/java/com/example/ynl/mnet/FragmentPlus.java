@@ -306,7 +306,8 @@ public class FragmentPlus extends Fragment {
                         //
                         long unix_time = System.currentTimeMillis() / 1000L;
                         String comment = mDescription.getText().toString().trim();
-                        Post post = new Post(userUid,downloadURL,unix_time,comment );
+                        Post post = new Post(user.getDisplayName(),downloadURL,unix_time,comment );
+                        //TODO: temporalmente se esta guardando username, deberia guardarse user_id
                         String uploadId = mDatabaseRef.push().getKey();
                         mDatabaseRef.child(userUid).child(uploadId).setValue(post);//save for especific user
                         mDatabaseRef_shared.child(uploadId).setValue(post);//save for all users
