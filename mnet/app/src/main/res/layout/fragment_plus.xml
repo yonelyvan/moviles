@@ -25,24 +25,24 @@
                 android:inputType="text" />
 
             <ImageView
-                android:id="@+id/img_to_upĺoad"
+                android:id="@+id/btn_shoot_photo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@mipmap/difragma" />
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+
+            <ImageButton
+                android:id="@+id/img_to_upĺoad"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/button_upload"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="16dp" />
+                android:layout_height="60dp"
+                android:background="@null"
+                android:src="@drawable/ic_img_upload" />
 
             <ImageButton
                 android:id="@+id/btn_upload"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="58dp"
+                android:background="@null"
                 android:src="@drawable/ic_upload" />
 
             <Space

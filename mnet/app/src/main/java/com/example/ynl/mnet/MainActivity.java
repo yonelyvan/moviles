@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
         //
         getSupportActionBar().hide();
+
+        ver_estado();
     }
 
     public  void loguearUsuario(View view) {
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //checking if success
                         if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "Bienvenido al MURO: " + TextEmail.getText(), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(MainActivity.this, "Bienvenido al MURO: " + TextEmail.getText(), Toast.LENGTH_LONG).show();
                             goto_muro_activity();//
                         } else {
                                 Toast.makeText(MainActivity.this, "Error de autenticación", Toast.LENGTH_LONG).show();
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Log.e("EMAIL", user.getEmail());
                 Log.e("USERNAME", user.getDisplayName());
+                welcome();
             } catch (Exception e) {
                 Log.e("MNET", "exception", e);
             }
@@ -100,5 +103,12 @@ public class MainActivity extends AppCompatActivity {
             // No user is signed in
             Log.e("NO USER", "NULL");
         }
+    }
+
+
+    public void welcome(){
+        Intent i=new Intent(MainActivity.this, MnetActivity.class);
+        startActivity( i );
+        Toast.makeText(MainActivity.this,"Bienvenido!",Toast.LENGTH_LONG).show();
     }
 }

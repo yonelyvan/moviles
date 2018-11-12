@@ -62,8 +62,6 @@ public class FragmentPlus extends Fragment {
     private DatabaseReference mDatabaseRef;
     private DatabaseReference mDatabaseRef_shared;
 
-    private StorageTask mUploadTask;
-    private ProgressBar mProgressBar;
     private EditText mDescription;
 
 
@@ -79,7 +77,7 @@ public class FragmentPlus extends Fragment {
         view = inflater.inflate(R.layout.fragment_plus, container, false);
         conf_btn_open_gallery();
         conf_btn_upload_photo();
-        mProgressBar = view.findViewById(R.id.progress_bar);
+        conf_btn_shoot_photo();
         mDescription = view.findViewById(R.id.text_description);
         m_storage = FirebaseStorage.getInstance().getReference();
         //database
@@ -123,6 +121,19 @@ public class FragmentPlus extends Fragment {
             }
         });
     }
+
+    public void conf_btn_shoot_photo(){
+        //@TODO paso de mensajes: para ruta de la imagen tomada
+        view.findViewById(R.id.btn_shoot_photo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e(TAG,"open camera");
+                Intent i=new Intent(getActivity(), ShootActivity.class);
+                startActivity( i );
+            }
+        });
+    }
+
 
     //button upload
     public void conf_btn_upload_photo(){
@@ -170,7 +181,7 @@ public class FragmentPlus extends Fragment {
 
     public void showImage(){
         //Log.e("SHOWIMG::",imgpath);
-        ImageView imageView = (ImageView) view.findViewById(R.id.img_to_upĺoad);
+        ImageView imageView = (ImageView) view.findViewById(R.id.btn_shoot_photo);
         imageView.setImageBitmap(BitmapFactory.decodeFile(IMGPATH));
     }
 

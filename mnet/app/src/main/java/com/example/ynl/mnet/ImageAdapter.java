@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.List;
 
@@ -44,9 +45,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         Post postCurrent = mPosts.get(position);
         holder.textViewUsername.setText(postCurrent.get_user_id());
 
-        //Date date = Date.from( Instant.ofEpochSecond( postCurrent.get_unix_time() ) );
-        Date date = new Date(postCurrent.get_unix_time()*1000L);
-        holder.textViewDate.setText(date.toString());
+        Long unix = Long.parseLong(postCurrent.getUnix_time_str() );
+        Date date = new Date(unix*1000L);
+        SimpleDateFormat jdf = new SimpleDateFormat("HH:mm  dd-MM-yyyy");
+        String java_date = jdf.format(date);
+
+        holder.textViewDate.setText(java_date );
         holder.textViewComentario.setText(postCurrent.get_comment());
         Picasso.get()
                 .load(postCurrent.get_img_url())
@@ -54,7 +58,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                 .fit()
                 .centerCrop()
                 .into(holder.imageView);
-
+        Log.e(TAG+"-UNIX:",postCurrent.getUnix_time_str());
         Log.e(TAG+"-URL:",postCurrent.get_img_url());
     }
 

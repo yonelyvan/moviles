@@ -14,7 +14,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:context="com.codinginflow.firebaseuploadexample.ImagesActivity">
 
 
@@ -39,21 +39,24 @@
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvDescription"
+
+            <Button
+                android:id="@+id/btn_logout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txt_name"
                 android:layout_centerHorizontal="true"
+                android:background="@null"
                 android:gravity="center"
-                android:textSize="18sp"
-                android:textStyle="italic" />
+                android:text="Cerrar sesión"
+                android:textColor="@color/colorAccent"
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvDescription"
+                android:layout_below="@id/btn_logout"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
@@ -79,8 +82,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Amigos"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -110,8 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Seguidores"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -126,8 +127,8 @@
 
             <ProgressBar
                 android:id="@+id/progress_circle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="117dp"
+                android:layout_height="92dp"
                 android:layout_centerInParent="true" />
 
             <android.support.v7.widget.RecyclerView
@@ -135,7 +136,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/line"
-                android:layout_marginTop="20dp" />
+                android:layout_marginBottom="30dp" />
+
 
         </RelativeLayout>
     </ScrollView>

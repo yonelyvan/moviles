@@ -2,9 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ynl.mnet">
 
+    <!-- permisos de camara -->
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="true" />
     <!-- permisos para acceso a memoria -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- customize camera -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+
+
 
     <application
         android:allowBackup="true"
@@ -23,7 +32,8 @@
         <activity android:name=".RegisterActivity" />
         <activity
             android:name=".MnetActivity"
-            android:label="@string/title_activity_mnet"></activity>
+            android:label="@string/title_activity_mnet" />
+        <activity android:name=".ShootActivity"></activity>
     </application>
 
 </manifest>

@@ -6,6 +6,7 @@ public class Post {
     private String user_id;
     private String img_url;
     private long unix_time;
+    private String unix_time_str;
     private String comment;
 
     public Post(){
@@ -15,6 +16,7 @@ public class Post {
         user_id = m_user_id;
         img_url = m_img_url;
         unix_time = m_unix_time;
+        unix_time_str = Long.toString(m_unix_time);
         comment = m_comment;
     }
 
@@ -28,6 +30,10 @@ public class Post {
 
     public void set_date(long m_unix_time){
         unix_time = m_unix_time;
+    }
+
+    public void set_date(String m_unix_time_str){
+        unix_time_str = m_unix_time_str;
     }
 
     public  void set_comment(String m_comment){
@@ -45,6 +51,8 @@ public class Post {
     public  long get_unix_time(){
         return unix_time;
     }
+
+    public String getUnix_time_str(){ return unix_time_str;}
 
     public String get_comment(){
         return comment;

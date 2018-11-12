@@ -1,8 +1,12 @@
 package com.example.ynl.mnet;
 
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -64,7 +68,8 @@ public class FragmentMuro extends Fragment {
         mContext = getContext();
 
         view = inflater.inflate(R.layout.fragment_muro, container, false);
-         //
+        //
+        conf_btn_logout();
         ver_imagenes(view);
         return view; //inflater.inflate(R.layout.fragment_muro, container, false);
     }
@@ -120,6 +125,19 @@ public class FragmentMuro extends Fragment {
         }
     }
 
+    public void conf_btn_logout(){
+        view.findViewById(R.id.btn_logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e(TAG,"logout");
 
+                Intent i=new Intent(getContext(), MainActivity.class);
+                //startActivity(i);
+                FirebaseAuth.getInstance().signOut();
+                startActivity( i );
+                Toast.makeText(getActivity(),"bye!",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
 }
