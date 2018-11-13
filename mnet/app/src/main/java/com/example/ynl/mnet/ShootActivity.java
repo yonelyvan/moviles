@@ -164,8 +164,14 @@ public class ShootActivity extends AppCompatActivity {
             //intent.putExtra(DATA_IMG, data);
 
             Log.e(TAG, "IMAGEN GALLERY "+picturePath );//URI
+            send_img_path(picturePath);
             ///startActivity(intent);
         }
+    }
+    public void send_img_path(String path){
+        Intent i=new Intent(ShootActivity.this,MnetActivity.class);
+        i.putExtra("IMGPATH",path);
+        ShootActivity.this.startActivity(i);
     }
 
 
