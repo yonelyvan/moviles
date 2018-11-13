@@ -48,7 +48,12 @@ public class ShootActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shoot);
+        try {
+            setContentView(R.layout.activity_shoot);
+        }catch (Exception e){
+
+            Log.e(TAG,e.getMessage());
+        }
 
         //full screem
         getSupportActionBar().hide();

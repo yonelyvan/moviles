@@ -1,9 +1,11 @@
 package com.example.ynl.mnet;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -17,6 +19,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Base64;
@@ -31,6 +34,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,17 +53,19 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     private int mDisplayOrientation;
     private int mSurfaceViewWidth, mSurfaceViewHeight;
-    Camera mCamera;
+    private static Camera mCamera;
     //private Camera mCamera;
-    SurfaceHolder mHolder;
+    private static SurfaceHolder mHolder;
 
 
     private int mCameraId = 1;
     private static final int CAMERA_FONT = 0;
     private static final int CAMERA_BACK = 1;
     private Context mContext;
-
     //public static String LAST_IMG_TAKEN = "/storage/emulated/0/DCIM/YNL/JPEG20180919_161627665273792.jpg";
+
+
+
 
 
     public CameraPreview(Context context) {
@@ -70,7 +76,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         this(context, attrs, 0);
     }
 
-    public CameraPreview(Context context, AttributeSet attrs, int defStyleAttr){
+    public CameraPreview(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
         mHolder = getHolder();
@@ -80,7 +86,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         getDefaultCameraId();
     }
 
-    public Camera getCameraInstance(){
+    public Camera getCameraInstance() {
         final Camera[] camera = new Camera[1];
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         Log.d(TAG, "getCameraInstance: " + Thread.currentThread().getName());
@@ -96,27 +102,23 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             }
         });
 
-        try{
+        try {
             countDownLatch.await();
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return camera[0];
     }
 
-    private void getDefaultCameraId(){
+    private void getDefaultCameraId() {
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-        for (int i = 0; i < Camera.getNumberOfCameras(); i++)
-        {
+        for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
             Camera.getCameraInfo(i, cameraInfo);
             Log.d(TAG, "getCameraInstance: camera facing=" + cameraInfo.facing + ",camera orientation=" + cameraInfo.orientation);
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK)
-            {
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
                 break;
-            }
-            else if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT)
-            {
+            } else if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                 mCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
                 break;
             }
@@ -127,11 +129,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if(mCamera!=null){
+        if (mCamera != null) {
             mCamera.startPreview();
         }
     }
-
 
 
     @Override
@@ -158,8 +159,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         initCamera(w, h);
     }
 
-    private void initCamera(int w, int h){
-        try{
+    private void initCamera(int w, int h) {
+        try {
             // mCamera = getCameraInstance();
             mCamera = Camera.open(mCameraId);
             Camera.Parameters parameters = mCamera.getParameters();//Obtener la instancia de parámetros de la cámara
@@ -195,10 +196,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.setParameters(parameters);
 
             mCamera.setPreviewDisplay(mHolder);
-            mCamera.setPreviewCallback( this);
+            mCamera.setPreviewCallback(this);
             mCamera.startPreview();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             Log.d(TAG, "Error starting camera preview: " + e.getMessage());
         }
     }
@@ -208,7 +208,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Camera.getCameraInfo(cameraType, info);
         int rotation = context.getWindowManager().getDefaultDisplay().getRotation();
         int degrees = 0;
-        switch (rotation){
+        switch (rotation) {
             case Surface.ROTATION_0:
                 degrees = 0;
                 bringToFront();
@@ -223,7 +223,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 bringToFront();
         }
         int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT){
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             result = (info.orientation + degrees) % 360;
             result = (360 - result) % 360;
         } else {  // back-facing
@@ -306,7 +306,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
 
-
     public int getCameraDisplayOrientation(Activity activity, int cameraId) {
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, info);
@@ -348,8 +347,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         Log.d(TAG, "onPreviewFrame: show water mark");
-        try
-        {
+        try {
             Camera.Size size = camera.getParameters().getPreviewSize();
             //Log.e(TAG, "onPreviewFrame: preview width=" + size.width + ",height=" + size.height);
             YuvImage yuvImage = new YuvImage(data, ImageFormat.NV21, size.width, size.height, null);
@@ -358,12 +356,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             yuvImage.compressToJpeg(new Rect(0, 0, size.width, size.height), 100, stream);
             Bitmap bitmap = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
 
-            if (mDataClickListener!=null)
-            {
+            if (mDataClickListener != null) {
                 mDataClickListener.onData(bitmap);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -391,16 +387,29 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void switchCamera() {
-        if (mCameraId==CAMERA_FONT) {
-            mCameraId = CAMERA_BACK;
-        } else {
-            mCameraId = CAMERA_FONT;
-        }
-        destroyCamera();
-        mCamera = Camera.open(mCameraId);
         try {
+            if (mCameraId == CAMERA_FONT) {
+                mCameraId = CAMERA_BACK;
+            } else {
+                mCameraId = CAMERA_FONT;
+            }
+            destroyCamera();
+
+            mCamera = Camera.open(mCameraId);
+        }catch (Exception e) {
+            Log.e(TAG, "failed to open Camera");
+            e.printStackTrace();
+        }
+
+
+        try {
+            mHolder = getHolder();
+            mHolder.setKeepScreenOn(true);
+            mHolder.addCallback(this);
+            mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
             mCamera.setPreviewDisplay(mHolder);
         } catch (IOException e) {
+            switchCamera();
             e.printStackTrace();
         }
 
@@ -410,9 +419,21 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mCamera.setDisplayOrientation(rotationDegrees);
         //
         mCamera.setPreviewCallback(this);
-        mCamera.startPreview();
+        try {
+
+            mCamera.startPreview();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
+    private void releaseCameraAndPreview() {
+        //mCamera.setCamera(null);
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
+    }
 
     private class MyFaceDetectionListener implements Camera.FaceDetectionListener {
 
@@ -462,6 +483,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
                 Toast.makeText(mContext, "Guardado en::" + pictureFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
 
+                //TODO: enviando ruta
+                send_img_path(pictureFile.getAbsolutePath());
 
 
                 Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -534,6 +557,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
 
         return file;
+    }
+
+
+    public void send_img_path(String path){
+        Intent i=new Intent(getContext(),MnetActivity.class);
+        i.putExtra("IMGPATH",path);
+        getContext().startActivity(i);
     }
 
 

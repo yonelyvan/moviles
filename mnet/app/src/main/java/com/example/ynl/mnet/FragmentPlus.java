@@ -43,6 +43,7 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ResourceBundle;
 
 
 public class FragmentPlus extends Fragment {
@@ -63,10 +64,18 @@ public class FragmentPlus extends Fragment {
     private DatabaseReference mDatabaseRef_shared;
 
     private EditText mDescription;
-
+    private ImageView imageView;
 
     public FragmentPlus() {
         // Required empty public constructor
+    }
+
+    public FragmentPlus(String img_path) {
+        // Required empty public constructor
+        IMGPATH = img_path;
+        IMGURI = Uri.fromFile(new File(img_path));
+        //showImage();
+        Log.e(TAG+"-IMGPATH",img_path);
     }
 
 
@@ -79,12 +88,15 @@ public class FragmentPlus extends Fragment {
         conf_btn_upload_photo();
         conf_btn_shoot_photo();
         mDescription = view.findViewById(R.id.text_description);
+        imageView = (ImageView) view.findViewById(R.id.btn_shoot_photo);
         m_storage = FirebaseStorage.getInstance().getReference();
         //database
         mStorageRef = FirebaseStorage.getInstance().getReference("img");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("users");
         mDatabaseRef_shared = FirebaseDatabase.getInstance().getReference("shared");
 
+        //set_img_path();
+        showImage();
 
         return view;
     }
@@ -181,8 +193,13 @@ public class FragmentPlus extends Fragment {
 
     public void showImage(){
         //Log.e("SHOWIMG::",imgpath);
-        ImageView imageView = (ImageView) view.findViewById(R.id.btn_shoot_photo);
-        imageView.setImageBitmap(BitmapFactory.decodeFile(IMGPATH));
+        try{
+            if(IMGPATH  != "null"){
+                imageView.setImageBitmap(BitmapFactory.decodeFile(IMGPATH));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -338,6 +355,28 @@ public class FragmentPlus extends Fragment {
     }
 
 
+
+    private ResourceBundle bundle;
+    public void get_img_path() {
+        try {
+            String img_path = bundle.getString("IMGPATH");
+            IMGPATH = img_path;
+            IMGURI = Uri.fromFile(new File(img_path));
+            Log.e(TAG+"-IMGPATH",img_path);
+            showImage();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    public void set_img_path(String img_path) {
+        IMGPATH = img_path;
+        IMGURI = Uri.fromFile(new File(img_path));
+        showImage();
+    }
 
 
 

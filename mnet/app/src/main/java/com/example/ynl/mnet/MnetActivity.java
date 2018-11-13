@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,6 +49,8 @@ public class MnetActivity extends AppCompatActivity {
     public String IMGPATH="null";
     private static int RESULT_LOAD_IMAGE = 1;
 
+    public static  String IMG_PATH;
+
 
 
 
@@ -56,6 +59,7 @@ public class MnetActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            remove_fragment();
             switch (item.getItemId()) {
 
                 case R.id.navigation_notifications:
@@ -101,8 +105,7 @@ public class MnetActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
-
+        get_img_path();
     }
 
     public void setFragment(Fragment fragment){
@@ -150,9 +153,51 @@ public class MnetActivity extends AppCompatActivity {
         }
     }
 
+    public void get_img_path(){
+        try {
+            String value=getIntent().getStringExtra("IMGPATH");
+            if(value.trim().length()>0){
+                Bundle bundle=new Bundle();
+                bundle.putString("IMGPATH",value);
+                //FragmentPlus ob=new FragmentPlus();
+                //ob.setArguments(bundle);
+                //MnetActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.navigation_plus,ob).addToBackStack(null).commit();
+                Log.e(TAG+"IMGPATH",value);
+                IMG_PATH = value;
 
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                fragmentPlus = new FragmentPlus(value);
+                setFragment(fragmentPlus);
+                //transaction.replace(R.id.container).commit();
+                //fragmentPlus.set_img_path(value);
+                //return true;
+                //setFragment(fragmentPlus);
+               // fragmentManager.beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.container)).commit();
 
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
+    //plus
+    public void remove_fragment(){
+        try{
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            //fragmentPlus = new FragmentPlus(value);
+            //transaction.remove(fragmentPlus);
+            //transaction.replace(R.id.container,fragmentPlus).commit();
+            //fragmentManager.popBackStackImmediate();
+            //transaction.replace(R.id.container).commit();
+            //fragmentManager.beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.container)).commit();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
 
 }
