@@ -9,20 +9,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.List;
 
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context mContext;
     private List<Post> mPosts;
-    private FirebaseUser user;
     public static final String TAG = "ImageAdapter";
 
     public ImageAdapter(Context context, List<Post> posts) {
@@ -37,13 +38,29 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     }
 
     @Override
-    public void onBindViewHolder(ImageViewHolder holder, int position) {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
-        //FirebaseUser =ref.child('users').orderByChild('name').equalTo('Alex')
-
+    public void onBindViewHolder(final ImageViewHolder holder, int position) {
         Post postCurrent = mPosts.get(position);
-        holder.textViewUsername.setText(postCurrent.get_user_id());
+
+        //--setting username
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Log.e(TAG+"Query uid:",postCurrent.get_user_id());
+        Query query = reference.child("users").child(postCurrent.get_user_id());//.child("matches");;//.child(postCurrent.get_user_id());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    User u = dataSnapshot.getValue(User.class);
+                    //String username =  (String) dataSnapshot.child("_name").getValue();
+                    holder.textViewUsername.setText(u.get_name());
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        //------
+
 
         Long unix = Long.parseLong(postCurrent.getUnix_time_str() );
         Date date = new Date(unix*1000L);
@@ -81,4 +98,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             imageView = itemView.findViewById(R.id.image_view_upload);
         }
     }
+
+
+
+
 }

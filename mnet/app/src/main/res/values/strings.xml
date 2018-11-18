@@ -1,14 +1,6 @@
 <resources>
     <string name="app_name">Art f1.4</string>
 
-    <!-- MENU -->
-    <string name="title_notifications">Notificaciones</string>
-    <string name="title_dashboard">Art f1.4</string>
-    <string name="title_plus"></string>
-    <string name="title_muro">Muro</string>
-    <string name="title_chat">Chat</string>
-
-
     <string name="hint_email">Correo</string>
     <string name="hint_password">Contraseña</string>
     <string name="hint_name">Full Name</string>
@@ -23,4 +15,12 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- tablas de bases de datos -->
+    <string name="db_name_users">users</string>
+    <string name="db_name_shared">shared</string>
+    <string name="db_name_img_storage">IMG_POSTS</string>
+    <string name="db_name_users_posts">users_posts</string>
+    <string name="db_name_followers">followers</string>
+    <string name="db_name_friends">friends</string>
 </resources>

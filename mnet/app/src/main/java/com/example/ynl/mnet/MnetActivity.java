@@ -40,6 +40,7 @@ import java.util.List;
 
 public class MnetActivity extends AppCompatActivity {
     FragmentNotificaciones fragmentNotificaciones;
+    FragmentBusqueda fragmentBusqueda;
     FragmentDashboard fragmentDashboard;
     FragmentPlus fragmentPlus;
     FragmentMuro fragmentMuro;
@@ -63,8 +64,8 @@ public class MnetActivity extends AppCompatActivity {
             switch (item.getItemId()) {
 
                 case R.id.navigation_notifications:
-                    Log.e(TAG,"Notificaciones");
-                    setFragment(fragmentNotificaciones);
+                    Log.e(TAG,"Busqueda");
+                    setFragment(fragmentBusqueda);
                     return true;
                 case R.id.navigation_dashboard:
                     Log.e(TAG,"dashboard");
@@ -95,7 +96,8 @@ public class MnetActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         //
-        fragmentNotificaciones = new FragmentNotificaciones();
+        //fragmentNotificaciones = new FragmentNotificaciones();
+        fragmentBusqueda = new FragmentBusqueda();
         fragmentDashboard = new FragmentDashboard();
         fragmentPlus = new FragmentPlus();
         fragmentMuro = new FragmentMuro();

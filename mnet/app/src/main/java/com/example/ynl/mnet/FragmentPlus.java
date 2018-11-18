@@ -66,6 +66,7 @@ public class FragmentPlus extends Fragment {
     private EditText mDescription;
     private ImageView imageView;
 
+
     public FragmentPlus() {
         // Required empty public constructor
     }
@@ -91,9 +92,9 @@ public class FragmentPlus extends Fragment {
         imageView = (ImageView) view.findViewById(R.id.btn_shoot_photo);
         m_storage = FirebaseStorage.getInstance().getReference();
         //database
-        mStorageRef = FirebaseStorage.getInstance().getReference("img");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users");
-        mDatabaseRef_shared = FirebaseDatabase.getInstance().getReference("shared");
+        mStorageRef = FirebaseStorage.getInstance().getReference( getString(R.string.db_name_img_storage) );
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference( getString(R.string.db_name_users_posts) );
+        mDatabaseRef_shared = FirebaseDatabase.getInstance().getReference( getString(R.string.db_name_shared) );
 
         //set_img_path();
         showImage();
@@ -334,8 +335,8 @@ public class FragmentPlus extends Fragment {
                         //
                         long unix_time = System.currentTimeMillis() / 1000L;
                         String comment = mDescription.getText().toString().trim();
-                        Post post = new Post(user.getDisplayName(),downloadURL,unix_time,comment );
-                        //TODO: temporalmente se esta guardando username, deberia guardarse user_id
+                        Post post = new Post(user.getUid(),downloadURL,unix_time,comment );
+                        //
                         String uploadId = mDatabaseRef.push().getKey();
                         mDatabaseRef.child(userUid).child(uploadId).setValue(post);//save for especific user
                         mDatabaseRef_shared.child(uploadId).setValue(post);//save for all users

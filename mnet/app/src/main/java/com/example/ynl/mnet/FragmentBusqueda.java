@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -19,35 +20,29 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class FragmentDashboard extends Fragment {
-    private FirebaseUser user;
-    //
+public class FragmentBusqueda extends Fragment {
     private RecyclerView mRecyclerView;
-    private ImageAdapter mAdapter;
+    private ItemUserAdapter mAdapter;
 
     private ProgressBar mProgressCircle;
 
     private DatabaseReference mDatabaseRef;
-    private List<Post> mPosts;
+    private List<User> mUsers;
 
     //
     private View view;
-    public static final String TAG = "FragmentoDashboard";
+    public static final String TAG = "FragmentBusqueda";
 
     //
     private Context mContext;
 
-    public FragmentDashboard() {
+    public FragmentBusqueda() {
         // Required empty public constructor
         mContext = getContext();
     }
@@ -55,37 +50,41 @@ public class FragmentDashboard extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        validar_sesion();
         mContext = getContext();
 
-        view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        view = inflater.inflate(R.layout.fragment_busqueda, container, false);
         //
         ver_imagenes(view);
         return view;
     }
 
 
-
-    public void ver_imagenes(View view){
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+    public void ver_imagenes(final View view) {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_item_user_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
         mProgressCircle = view.findViewById(R.id.progress_circle);
 
-        mPosts = new ArrayList<>();
+        mUsers = new ArrayList<>();
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("shared");//get images from a shared "table"
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users");//get images from a shared "table"
         //Query Q = mDatabaseRef.limitToLast(15);
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Post post= postSnapshot.getValue(Post.class);
-                    mPosts.add(0,post);
+                    if (dataSnapshot.exists()) {
+                        User u = postSnapshot.getValue(User.class);
+                        Log.e(TAG, u.get_name());
+                        if(u.get_id().equals( FirebaseAuth.getInstance().getCurrentUser().getUid()) ){
+                            continue;
+                        }
+                        mUsers.add(0, u);
+                    }
                 }
 
-                mAdapter = new ImageAdapter(mContext, mPosts);
+                mAdapter = new ItemUserAdapter(mContext, mUsers);
 
                 mRecyclerView.setAdapter(mAdapter);
                 mProgressCircle.setVisibility(View.INVISIBLE);
@@ -98,45 +97,5 @@ public class FragmentDashboard extends Fragment {
             }
         });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void validar_sesion(){
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // User is signed in
-            Log.e("sesion iniciada:", user.getEmail());
-        } else {
-            // No user is signed in
-            Log.e("ERROR","no existe sesion:");
-        }
-    }
-
-
-
-
-
 
 }

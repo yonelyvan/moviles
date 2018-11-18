@@ -86,7 +86,7 @@ public class FragmentMuro extends Fragment {
 
         mPosts = new ArrayList<>();
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());//get images from a specific user
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference( getString(R.string.db_name_users_posts) ).child(user.getUid());//get images from a specific user
         //Query Q = mDatabaseRef.orderByPriority();
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {

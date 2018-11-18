@@ -109,6 +109,6 @@ public class MainActivity extends AppCompatActivity {
     public void welcome(){
         Intent i=new Intent(MainActivity.this, MnetActivity.class);
         startActivity( i );
-        Toast.makeText(MainActivity.this,"Bienvenido!",Toast.LENGTH_LONG).show();
+        //Toast.makeText(MainActivity.this,"Bienvenido!",Toast.LENGTH_LONG).show();
     }
 }
