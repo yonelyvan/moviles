@@ -80,7 +80,7 @@ public class FragmentBusqueda extends Fragment {
                         if(u.get_id().equals( FirebaseAuth.getInstance().getCurrentUser().getUid()) ){
                             continue;
                         }
-                        mUsers.add(0, u);
+                        mUsers.add(u);
                     }
                 }
 

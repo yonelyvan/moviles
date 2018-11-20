@@ -42,24 +42,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         Post postCurrent = mPosts.get(position);
 
         //--setting username
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Log.e(TAG+"Query uid:",postCurrent.get_user_id());
-        Query query = reference.child("users").child(postCurrent.get_user_id());//.child("matches");;//.child(postCurrent.get_user_id());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    User u = dataSnapshot.getValue(User.class);
-                    //String username =  (String) dataSnapshot.child("_name").getValue();
-                    holder.textViewUsername.setText(u.get_name());
-                }
+        int max_intentos = 5;
+        for (int i=0; i<max_intentos;i++){
+            if( set_username_on_view(postCurrent,holder) ){
+                break;
             }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        //------
+        }
 
 
         Long unix = Long.parseLong(postCurrent.getUnix_time_str() );
@@ -98,6 +86,38 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             imageView = itemView.findViewById(R.id.image_view_upload);
         }
     }
+
+    public Boolean set_username_on_view(Post postCurrent, final ImageViewHolder holder){
+        Boolean r = true;
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        try {
+            String p_uid = postCurrent.get_user_id();
+            Query query = reference.child("users").child(p_uid);//.child("matches");;//.child(postCurrent.get_user_id());
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        User u = dataSnapshot.getValue(User.class);
+                        //String username =  (String) dataSnapshot.child("_name").getValue();
+                        holder.textViewUsername.setText(u.get_name());
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            r = false;
+        }
+        return r;
+        //Log.e(TAG+"Query uid:",postCurrent.get_user_id());
+        //------
+    }
+
 
 
 
