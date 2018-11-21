@@ -63,7 +63,13 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserAdapter.ImageV
                 @Override
                 public void onClick(View view) {
                     Log.e(TAG,"FOLLOW "+u.get_name());
+                    String estado = btn_follow.getText().toString();
                     add_follower(u, itemView);
+                    btn_follow.setText("Siguiendo");
+                    if(estado.equals("Siguiendo")) {
+                        btn_follow.setVisibility(View.GONE);
+                        btn_follow.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
 
