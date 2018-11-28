@@ -3,6 +3,7 @@ package com.example.ynl.mnet;
 import java.util.Date;
 
 public class Post {
+    private String post_id;
     private String user_id;
     private String img_url;
     private long unix_time;
@@ -12,13 +13,16 @@ public class Post {
     public Post(){
     }
 
-    public  Post(String m_user_id, String m_img_url, long m_unix_time, String m_comment){
+    public  Post(String m_post_id,String m_user_id, String m_img_url, long m_unix_time, String m_comment){
+        post_id = m_post_id;
         user_id = m_user_id;
         img_url = m_img_url;
         unix_time = m_unix_time;
         unix_time_str = Long.toString(m_unix_time);
         comment = m_comment;
     }
+
+    public void set_post_id(String m_post_id){ post_id = m_post_id; }
 
     public void set_user_id(String m_user_id){
         user_id = m_user_id;
@@ -39,6 +43,8 @@ public class Post {
     public  void set_comment(String m_comment){
         comment = m_comment;
     }
+
+    public  String get_post_id(){ return  post_id;}
 
     public  String get_user_id(){
         return user_id;

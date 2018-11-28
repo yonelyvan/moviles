@@ -6,9 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -72,22 +76,82 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         return mPosts.size();
     }
 
+
+
     public class ImageViewHolder extends RecyclerView.ViewHolder {
         public TextView textViewComentario;
         public TextView textViewUsername;
         public TextView textViewDate;
         public ImageView imageView;
+        public ImageView btn_like;
+        public Post current_post;
 
-        public ImageViewHolder(View itemView) {
+
+
+        public ImageViewHolder(final View itemView) {
             super(itemView);
             textViewUsername= itemView.findViewById(R.id.text_view_username);
             textViewDate = itemView.findViewById(R.id.text_view_date);
             textViewComentario = itemView.findViewById(R.id.text_view_comentario);
             imageView = itemView.findViewById(R.id.image_view_upload);
+
+            //like
+            btn_like = (ImageView) itemView.findViewById(R.id.btn_like);
+
+            btn_like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String estado = "LIKE";
+                    save_like_user(itemView, estado);
+                    save_like_shared(itemView, estado);
+                    //view.setBackgroundResource(R.mipmap.ic_like);
+                    btn_like.setImageResource(R.mipmap.ic_like);
+                    //Log.e(TAG,"LIKE "+u.get_name());
+                    //add_follower(u, itemView);
+                }
+            });
+
+
         }
+
+
+
+        public void save_like_shared(final View itemView, String estado){
+            FirebaseUser f_user = FirebaseAuth.getInstance().getCurrentUser();
+            //para shared db_name_shared
+            String db_name_user_likes = mContext.getString(R.string.db_name_shared);
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(db_name_user_likes).child(current_post.get_post_id()).child(f_user.getUid());//en el usuario actual
+            Likes l = new Likes(f_user.getUid(), estado);
+            ref.setValue(l);//save
+            Toast.makeText(itemView.getContext(), "LIKE: "+current_post.get_post_id(), Toast.LENGTH_SHORT).show();
+        }
+
+        public void save_like_user(final View itemView, String estado){
+            FirebaseUser f_user = FirebaseAuth.getInstance().getCurrentUser();
+            //para usuarios
+            String db_name_user_likes = mContext.getString(R.string.db_name_users_posts);
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(db_name_user_likes).child(current_post.get_user_id()).child(current_post.get_post_id()).child(f_user.getUid());//en el usuario actual
+            Likes l = new Likes(f_user.getUid(),estado);
+            ref.setValue(l);//save
+            //Toast.makeText(itemView.getContext(), "LIKE: "+current_post.get_post_id(), Toast.LENGTH_SHORT).show();
+        }
+
+        //public void get_estado_server(){
+        //}
+
+        public void set_current_post(Post m_current_post){
+            current_post = m_current_post;
+        }
+
+
+
+
+
+
     }
 
     public Boolean set_username_on_view(Post postCurrent, final ImageViewHolder holder){
+        holder.set_current_post(postCurrent);
         Boolean r = true;
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         try {
