@@ -333,13 +333,14 @@ public class FragmentPlus extends Fragment {
                         String downloadURL = downloadUri.toString();
                         Log.e(TAG+"ULR",downloadURL);
                         //
+                        //id post
+                        String post_id = mDatabaseRef.push().getKey();
+
                         long unix_time = System.currentTimeMillis() / 1000L;
                         String comment = mDescription.getText().toString().trim();
-                        Post post = new Post(user.getUid(),downloadURL,unix_time,comment );
-                        //
-                        String uploadId = mDatabaseRef.push().getKey();
-                        mDatabaseRef.child(userUid).child(uploadId).setValue(post);//save for especific user
-                        mDatabaseRef_shared.child(uploadId).setValue(post);//save for all users
+                        Post post = new Post(post_id,user.getUid(),downloadURL,unix_time,comment );
+                        mDatabaseRef.child(userUid).child(post_id).setValue(post);//save for especific user
+                        mDatabaseRef_shared.child(post_id).setValue(post);//save for all users
                         Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
 
 

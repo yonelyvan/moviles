@@ -19,51 +19,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="$USER_HOME$/Pictures/user-avatar.png" />
-                                      <entry key="outputName" value="ic_avatar" />
-                                      <entry key="theme" value="HOLO_DARK" />
-                                    </map>
-                                  </option>
-                                </PersistentState>
-                              </value>
-                            </entry>
-                            <entry key="launcher">
-                              <value>
-                                <PersistentState>
-                                  <option name="children">
-                                    <map>
-                                      <entry key="backgroundImage">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="scalingPercent" value="76" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                      <entry key="foregroundImage">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="scalingPercent" value="66" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                    </map>
-                                  </option>
-                                  <option name="values">
-                                    <map>
-                                      <entry key="backgroundColor" value="343434" />
-                                      <entry key="backgroundImage" value="$USER_HOME$/Pictures/logo-edit/back.png" />
-                                      <entry key="foregroundImage" value="$USER_HOME$/Pictures/user-avatar.png" />
-                                      <entry key="outputName" value="ic_avatar" />
-                                      <entry key="showGrid" value="true" />
-                                      <entry key="webIconShape" value="CIRCLE" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Pictures/like.png" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -72,28 +28,12 @@
                             <entry key="launcherLegacy">
                               <value>
                                 <PersistentState>
-                                  <option name="children">
-                                    <map>
-                                      <entry key="image">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="trimmed" value="true" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                    </map>
-                                  </option>
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="cropped" value="true" />
                                       <entry key="iconShape" value="CIRCLE" />
-                                      <entry key="imageAsset" value="$USER_HOME$/Pictures/user-avatar.png" />
-                                      <entry key="outputName" value="ic_avatar" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Pictures/dislike.png" />
+                                      <entry key="outputName" value="ic_dislike" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -105,7 +45,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="$USER_HOME$/Pictures/user-avatar.png" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Pictures/like.png" />
                                     </map>
                                   </option>
                                 </PersistentState>
