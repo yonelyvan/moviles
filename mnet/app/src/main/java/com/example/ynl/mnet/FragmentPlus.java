@@ -126,17 +126,23 @@ public class FragmentPlus extends Fragment {
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             2000);
                 }
-                else {
-                    Log.e(TAG,"open gallery");
-                    openGallery();
-                    //startGallery();
+                //permisos de camara
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                    requestPermissions( new String[]{Manifest.permission.CAMERA},2000);
                 }
+                Log.e(TAG,"open gallery");
+                openGallery();
+                //startGallery();
             }
         });
     }
 
     public void conf_btn_shoot_photo(){
-        //@TODO paso de mensajes: para ruta de la imagen tomada
+        //permisos de camara
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions( new String[]{Manifest.permission.CAMERA},2000);
+        }
+
         view.findViewById(R.id.btn_shoot_photo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
