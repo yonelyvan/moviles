@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "802074356833",
+    "firebase_url": "https://safechat-d9b97.firebaseio.com",
+    "project_id": "safechat-d9b97",
+    "storage_bucket": "safechat-d9b97.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802074356833:android:3e90b0afe0c4e776",
+        "android_client_info": {
+          "package_name": "com.safechat.ynl.safechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802074356833-hc38kg4r6rant44cmta34jlreurphksg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKyGCj8tn0ISFhmDn9oc2woKBmFJqxH4I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
